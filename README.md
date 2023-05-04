@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![CozyNest](https://user-images.githubusercontent.com/79298692/236097721-fe7ac19a-375d-4522-b12b-1c2bce85629f.png)
+![CozyNest (1)](https://user-images.githubusercontent.com/79298692/236353408-cce3a561-fa85-4f16-80b7-54309af580a2.png)
 
 
 ## API Documentation
