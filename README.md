@@ -1340,8 +1340,8 @@ Delete an existing booking.
   Spot must belong to the current user
 - Request
 
-  - Method: ?
-  - URL: ?
+  - Method: DELETE
+  - URL: "/booking/:id"
   - Body: none
 
 - Successful Response
@@ -1393,8 +1393,9 @@ Delete an existing image for a Spot.
 - Require proper authorization: Spot must belong to the current user
 - Request
 
-  - Method: ?
-  - URL: ?
+  - Method: DELETE
+  <!-- ":id is named different above?? -->
+  - URL: "spots/:spotId/images/:imageId"
   - Body: none
 
 - Successful Response
@@ -1431,8 +1432,8 @@ Delete an existing image for a Review.
 - Require proper authorization: Review must belong to the current user
 - Request
 
-  - Method: ?
-  - URL: ?
+  - Method: DELETE
+  - URL: "/reviews/:id/images/:imageId"
   - Body: none
 
 - Successful Response
@@ -1468,8 +1469,8 @@ Return spots filtered by query parameters.
 - Require Authentication: false
 - Request
 
-  - Method: ?
-  - URL: ?
+  - Method: GET
+  - URL: /spots
   - Query Parameters
     - page: integer, minimum: 1, maximum: 10, default: 1
     - size: integer, minimum: 1, maximum: 20, default: 20
