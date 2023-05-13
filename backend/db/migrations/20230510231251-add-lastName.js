@@ -1,5 +1,6 @@
 "use strict";
 let options = {};
+// options.tableName = "Users";
 if (process.env.NODE_ENV === "production") {
   options.schema = process.env.SCHEMA; // define your schema in options object
 }
@@ -12,7 +13,8 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    queryInterface.addColumn(options, "Users", "lastName", {
+    options.tableName = "Users";
+    queryInterface.addColumn(options, "lastName", {
       type: Sequelize.STRING,
       allowNull: false,
     });
@@ -25,6 +27,7 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    queryInterface.removeColumn(options, "Users", "lastName");
+    options.tableName = "Users";
+    queryInterface.removeColumn(options, "lastName");
   },
 };
