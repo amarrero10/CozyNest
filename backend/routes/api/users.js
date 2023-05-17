@@ -4,7 +4,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { User } = require("../../db/models");
+const { User, Spot } = require("../../db/models");
 
 const router = express.Router();
 
@@ -52,6 +52,75 @@ router.post("/", validateSignup, async (req, res) => {
   return res.json({
     user: safeUser,
   });
+});
+
+// GET Current User
+router.get("/current", requireAuth, async (req, res) => {
+  // console.log("REQ>USER", req.user);
+  const user = req.user; // Assuming the authenticated user information is stored in the req.user property
+
+  if (user) {
+    const safeUser = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      username: user.username,
+    };
+
+    return res.status(200).json({ user: safeUser });
+  } else {
+    return res.json({ user: null });
+  }
+});
+
+// Get user by ID
+router.get("/:id", async (req, res) => {
+  const userId = req.params.id;
+  const user = await User.findByPk(userId);
+  console.log(user);
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  const safeUser = {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+  };
+
+  return res.json(safeUser);
+});
+
+// GET all spots owned by current user
+router.get("/current/spots", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+
+  const spots = await Spot.findAll({
+    where: {
+      ownerId: currentUser.id,
+    },
+  });
+  const formattedSpots = spots.map((spot) => ({
+    id: spot.id,
+    ownerId: spot.ownerId,
+    address: spot.address,
+    city: spot.city,
+    state: spot.state,
+    country: spot.country,
+    lat: spot.lat,
+    lon: spot.lon,
+    name: spot.name,
+    description: spot.description,
+    price: spot.price,
+    createdAt: spot.createdAt,
+    updatedAt: spot.updatedAt,
+  }));
+
+  res.status(200).json({ Spots: formattedSpots });
 });
 
 module.exports = router;
