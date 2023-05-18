@@ -118,6 +118,8 @@ router.get("/current/spots", requireAuth, async (req, res) => {
     price: spot.price,
     createdAt: spot.createdAt,
     updatedAt: spot.updatedAt,
+    avgRating: spot.avgRating,
+    previewImage: spot.previewImage,
   }));
 
   res.status(200).json({ Spots: formattedSpots });
