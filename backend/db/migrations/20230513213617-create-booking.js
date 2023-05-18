@@ -18,19 +18,24 @@ module.exports = {
         },
         userId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
         },
         spotId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
         },
         startDate: {
           type: Sequelize.DATE,
+          allowNull: false,
         },
         endDate: {
           type: Sequelize.DATE,
+          allowNull: false,
         },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           allowNull: false,

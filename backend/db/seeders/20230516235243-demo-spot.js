@@ -22,8 +22,8 @@ module.exports = {
           name: "Empire State Building",
           description: "A famous skyscraper in New York City",
           price: 2000,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          // createdAt: new Date(),
+          // updatedAt: new Date(),
         },
         {
           ownerId: 6,
@@ -36,8 +36,8 @@ module.exports = {
           name: "Griffith Observatory",
           description: "An iconic observatory in Los Angeles",
           price: 1500,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          // createdAt: new Date(),
+          // updatedAt: new Date(),
         },
         {
           ownerId: 7,
@@ -50,8 +50,8 @@ module.exports = {
           name: "Transamerica Pyramid",
           description: "A famous skyscraper in San Francisco",
           price: 1800,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          // createdAt: new Date(),
+          // updatedAt: new Date(),
         },
         {
           ownerId: 8,
@@ -64,8 +64,8 @@ module.exports = {
           name: "Willis Tower",
           description: "A famous skyscraper in Chicago",
           price: 2200,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          // createdAt: new Date(),
+          // updatedAt: new Date(),
         },
         {
           ownerId: 9,
@@ -78,8 +78,8 @@ module.exports = {
           name: "Freedom Tower",
           description: "A historic tower in Miami",
           price: 1900,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          // createdAt: new Date(),
+          // updatedAt: new Date(),
         },
       ],
       {}
@@ -92,7 +92,15 @@ module.exports = {
     return queryInterface.bulkDelete(
       options,
       {
-        username: { [Op.in]: ["Demo-lition", "FakeUser1", "FakeUser2"] },
+        name: {
+          [Op.in]: [
+            "Empire State Building",
+            "Griffith Observatory",
+            "Transamerica Pyramid",
+            "Willis Tower",
+            "Freedom Tower",
+          ],
+        },
       },
       {}
     );

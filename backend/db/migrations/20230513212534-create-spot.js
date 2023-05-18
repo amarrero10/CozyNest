@@ -49,11 +49,20 @@ module.exports = {
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           allowNull: false,
           type: Sequelize.DATE,
           defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        avgRating: {
+          type: Sequelize.INTEGER,
+          defaultValue: 1,
+        },
+        previewImage: {
+          type: Sequelize.STRING,
+          defaultValue: "No Images uploaded.",
         },
       },
       options

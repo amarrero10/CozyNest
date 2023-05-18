@@ -18,19 +18,24 @@ module.exports = {
         },
         userId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
         },
         spotId: {
           type: Sequelize.INTEGER,
+          allowNull: false,
         },
         stars: {
           type: Sequelize.INTEGER,
+          allowNull: false,
         },
         review: {
           type: Sequelize.STRING,
+          allowNull: false,
         },
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           allowNull: false,
