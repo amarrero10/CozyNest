@@ -62,6 +62,26 @@ router.get("/:id", async (req, res) => {
       attributes: {
         include: [[Sequelize.fn("COUNT", Sequelize.col("Reviews.id")), "numReviews"]],
       },
+      group: [
+        "Spot.id",
+        "Spot.ownerId",
+        "Spot.address",
+        "Spot.city",
+        "Spot.state",
+        "Spot.country",
+        "Spot.lat",
+        "Spot.lon",
+        "Spot.name",
+        "Spot.description",
+        "Spot.price",
+        "Spot.avgRating",
+        "Spot.previewImage",
+        "Spot.createdAt",
+        "Spot.updatedAt",
+        "Owner.id",
+        "Owner.firstName",
+        "Owner.lastName",
+      ].map((column) => Sequelize.literal(column)),
     });
 
     if (!spot) {
