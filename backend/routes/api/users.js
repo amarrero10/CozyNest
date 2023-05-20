@@ -4,7 +4,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { User, Spot } = require("../../db/models");
+const { Review, Image, User, Spot } = require("../../db/models");
 
 const router = express.Router();
 
@@ -123,6 +123,49 @@ router.get("/current/spots", requireAuth, async (req, res) => {
   }));
 
   res.status(200).json({ Spots: formattedSpots });
+});
+
+// Get reviews by Current User
+router.get("/current/reviews", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+
+  const reviews = await Review.findAll({
+    where: {
+      userId: currentUser.id,
+    },
+    include: [
+      {
+        model: User,
+        attributes: ["id", "firstName", "lastName"],
+      },
+      {
+        model: Spot,
+        attributes: [
+          "id",
+          "ownerId",
+          "address",
+          "city",
+          "state",
+          "country",
+          "lat",
+          "lon",
+          "name",
+          "price",
+          "previewImage",
+        ],
+      },
+      {
+        model: Image,
+        as: "ReviewImages",
+        where: {
+          imageableType: "review",
+        },
+        required: false, // Use `required: false` to perform a LEFT JOIN
+        attributes: ["id", "url"],
+      },
+    ],
+  });
+  res.status(200).json({ Reviews: reviews });
 });
 
 module.exports = router;

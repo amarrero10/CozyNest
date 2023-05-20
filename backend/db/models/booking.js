@@ -8,7 +8,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Booking.belongsTo(models.User, {
+        foreignKey: "userId",
+        otherKey: "id",
+      });
+      Booking.belongsTo(models.Spot, {
+        foreignKey: "spotId",
+        otherKey: "id",
+      });
     }
   }
   Booking.init(
@@ -28,6 +35,18 @@ module.exports = (sequelize, DataTypes) => {
       endDate: {
         type: DataTypes.DATE,
         allowNull: false,
+        validate: {
+          isAfter: function (value) {
+            if (this.startDate > value) {
+              throw new Error("endDate must be after startDate");
+            }
+          },
+          isNotSameAsStartDate: function (value) {
+            if (this.startDate === value) {
+              throw new Error("endDate cannot be the same as startDate");
+            }
+          },
+        },
       },
     },
     {

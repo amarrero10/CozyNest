@@ -29,7 +29,7 @@ module.exports = {
           allowNull: false,
         },
         review: {
-          type: Sequelize.STRING,
+          type: Sequelize.STRING(1000),
           allowNull: false,
         },
         createdAt: {
@@ -45,9 +45,17 @@ module.exports = {
       },
       options
     );
+
+    options.tableName = "Reviews";
+    await queryInterface.addIndex(options, {
+      fields: ["userId", "spotId"],
+      unique: true,
+      name: "unique_user_spot_review",
+    });
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "Reviews";
+    await queryInterface.removeIndex(options, "unique_user_spot_review");
     await queryInterface.dropTable(options);
   },
 };

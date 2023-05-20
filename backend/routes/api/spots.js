@@ -60,7 +60,10 @@ router.get("/:id", async (req, res) => {
         },
       ],
       attributes: {
-        include: [[Sequelize.fn("COUNT", Sequelize.col("Reviews.id")), "numReviews"]],
+        include: [
+          [Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"],
+          [Sequelize.fn("COUNT", Sequelize.col("Reviews.id")), "numReviews"],
+        ],
       },
       group: [
         "Spot.id",
@@ -200,6 +203,72 @@ router.delete("/:id", requireAuth, async (req, res) => {
   await spot.destroy();
 
   res.json({ message: "successfully deleted!" });
+});
+
+// GET all reviews by a spot's id
+router.get("/:id/reviews", async (req, res) => {
+  const spotId = req.params.id;
+
+  const spot = await Spot.findByPk(spotId);
+
+  if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
+
+  const reviews = await Review.findAll({
+    where: {
+      spotId: spot.id,
+    },
+    include: [
+      {
+        model: User,
+        attributes: ["id", "firstName", "lastName"],
+      },
+      {
+        model: Image,
+        as: "ReviewImages",
+        attributes: ["id", "url"],
+      },
+    ],
+  });
+
+  res.status(200).json({ Reviews: reviews });
+});
+
+// Create review based on the spots id
+router.post("/:id/reviews", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+  const spotId = req.params.id;
+  const { review, stars } = req.body;
+
+  const spot = await Spot.findByPk(spotId);
+
+  if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
+
+  if (spot.ownerId === currentUser)
+    return res
+      .status(403)
+      .json({ message: "Owners cannot create reviews for their own properties" });
+
+  const existingReview = await Review.findOne({
+    where: {
+      userId: currentUser.id,
+      spotId: spot.id,
+    },
+  });
+
+  if (existingReview) {
+    return res.status(500).json({
+      message: "User already has a review for this spot",
+    });
+  }
+
+  const newReview = await Review.create({
+    userId: currentUser.id,
+    spotId: spot.id,
+    review,
+    stars,
+  });
+
+  res.status(201).json(newReview);
 });
 
 module.exports = router;

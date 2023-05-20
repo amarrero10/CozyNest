@@ -45,9 +45,18 @@ module.exports = {
       },
       options
     );
+
+    options.tableName = "Bookings";
+    await queryInterface.addIndex(options, {
+      fields: ["startDate", "endDate"],
+      unique: true,
+      name: "unique_booking_dates",
+    });
   },
   async down(queryInterface, Sequelize) {
     options.tableName = "Bookings";
+
     await queryInterface.dropTable(options);
+    await queryInterface.removeIndex(options, "unique_booking_dates");
   },
 };
