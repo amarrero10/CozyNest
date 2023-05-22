@@ -168,4 +168,101 @@ router.get("/current/reviews", requireAuth, async (req, res) => {
   res.status(200).json({ Reviews: reviews });
 });
 
+// Get review by current user based on review id
+router.get("/current/reviews/:id", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+  const reviewId = req.params.id;
+
+  try {
+    const review = await Review.findOne({
+      where: {
+        id: reviewId,
+        userId: currentUser.id,
+      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "firstName", "lastName"],
+        },
+        {
+          model: Spot,
+          attributes: [
+            "id",
+            "ownerId",
+            "address",
+            "city",
+            "state",
+            "country",
+            "lat",
+            "lon",
+            "name",
+            "price",
+            "previewImage",
+          ],
+        },
+        {
+          model: Image,
+          as: "ReviewImages",
+          attributes: ["id", "url"],
+        },
+      ],
+    });
+
+    if (!review) {
+      return res.status(404).json({ message: "Review couldn't be found" });
+    }
+
+    res.status(200).json(review);
+  } catch (error) {
+    console.error("Error fetching review:", error);
+    res.status(500).json({ message: "Error fetching review" });
+  }
+});
+
+// Add Image to review based on review id as current user
+router.post("/current/reviews/:id/images", requireAuth, async (req, res) => {
+  const currentReview = parseInt(req.params.id, 10);
+  const currentUser = req.user;
+  const { url } = req.body;
+
+  const review = await Review.findOne({
+    where: {
+      id: currentReview,
+      userId: currentUser.id,
+    },
+    include: [
+      {
+        model: Image,
+        as: "ReviewImages",
+      },
+    ],
+  });
+
+  if (!review) {
+    return res.status(404).json({ message: "Review could not be found." });
+  }
+
+  const imageCount = await Image.count({
+    where: {
+      imageableType: "review",
+      imageableId: currentReview,
+    },
+  });
+
+  if (imageCount >= 10) {
+    return res
+      .status(403)
+      .json({ message: "Maximum number of images for this review was reached" });
+  }
+
+  // Create a new image for the review
+  const newImage = await Image.create({
+    imageableId: currentReview,
+    imageableType: "review",
+    url,
+  });
+
+  res.status(200).json(newImage);
+});
+
 module.exports = router;
