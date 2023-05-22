@@ -930,7 +930,7 @@ Update and return an existing review.
 - Request
 
   - Method: PUT
-  - URL: "/reviews/:id"
+  - URL: "users/current/reviews/:id"
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1000,7 +1000,7 @@ Delete an existing review.
 - Request
 
   - Method: DELETE
-  - URL: "/reviews/:id"
+  - URL: "users/current/reviews/:id"
   - Body: none
 
 - Successful Response
