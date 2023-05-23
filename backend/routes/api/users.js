@@ -4,7 +4,7 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { Review, Image, User, Spot } = require("../../db/models");
+const { Review, Image, User, Spot, Booking } = require("../../db/models");
 
 const router = express.Router();
 
@@ -263,6 +263,57 @@ router.post("/current/reviews/:id/images", requireAuth, async (req, res) => {
   });
 
   res.status(200).json(newImage);
+});
+
+// Edit a Review as Current User
+router.put("/current/reviews/:id", requireAuth, async (req, res) => {
+  const { review, stars } = req.body;
+  const currentUser = req.user;
+  const currentReview = req.params.id;
+
+  const currReview = await Review.findOne({
+    where: {
+      id: currentReview,
+      userId: currentUser.id,
+    },
+  });
+
+  if (!currReview) return res.status(404).json({ message: "Review could not be found." });
+
+  await currReview.update({
+    review,
+    stars,
+  });
+
+  res.status(200).json(currReview);
+});
+
+// Get all bookings of Current User
+router.get("/current/bookings", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+  const bookings = await Booking.findAll({
+    where: {
+      userId: currentUser.id,
+    },
+    include: {
+      model: Spot,
+      attributes: [
+        "id",
+        "ownerId",
+        "address",
+        "city",
+        "state",
+        "country",
+        "lat",
+        "lon",
+        "name",
+        "price",
+        "previewImage",
+      ],
+    },
+  });
+
+  res.status(200).json(bookings);
 });
 
 module.exports = router;

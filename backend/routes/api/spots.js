@@ -1,11 +1,12 @@
 const express = require("express");
 const { Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
-const { User, Spot, Image, Review } = require("../../db/models");
+const { User, Spot, Image, Review, Booking } = require("../../db/models");
 
 const router = express.Router();
 
@@ -269,6 +270,87 @@ router.post("/:id/reviews", requireAuth, async (req, res) => {
   });
 
   res.status(201).json(newReview);
+});
+
+// GET booking based on Spot id
+router.get("/:id/bookings", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+  const spotId = req.params.id;
+
+  const spot = await Spot.findByPk(spotId);
+
+  if (!spot) return res.status(404).json({ message: "Spot could not be found." });
+  if (currentUser.id === spot.ownerId) {
+    // IF Current User is owner of spot
+    const bookings = await Booking.findAll({
+      where: {
+        spotId: spot.id,
+      },
+      include: {
+        model: User,
+        attributes: ["id", "firstName", "lastName"],
+      },
+    });
+
+    res.status(200).json({ Bookings: bookings });
+  } else {
+    // If the current user is not the owner of the spot
+    const bookings = await Booking.findAll({
+      where: {
+        spotId: spot.id,
+      },
+      attributes: ["spotId", "startDate", "endDate"],
+    });
+
+    return res.status(200).json({ Bookings: bookings });
+  }
+});
+
+// Create a booking from a spot based on spot id. Spot CANNOT belong to current user
+router.post("/:id/bookings", requireAuth, async (req, res) => {
+  const currentUser = req.user;
+  const spotId = parseInt(req.params.id, 10);
+  const { startDate, endDate } = req.body;
+
+  const spot = await Spot.findByPk(spotId);
+
+  // Check to see if spot exists
+  if (!spot) return res.status(404).json({ message: "Spot could not be found." });
+
+  // Check to see if current user is the owner of the current spot
+  if (currentUser.id === spot.ownerId)
+    return res.status(403).json({ message: "Cannot book your own property." });
+
+  const existingBooking = await Booking.findOne({
+    where: {
+      spotId: spot.id,
+      startDate: {
+        [Op.lte]: endDate,
+      },
+      endDate: {
+        [Op.gte]: startDate,
+      },
+    },
+  });
+
+  if (existingBooking) {
+    return res.status(403).json({
+      message: "Sorry, this spot is already booked for the specified dates",
+      errors: {
+        startDate: "Start date conflicts with an existing booking",
+        endDate: "End date conflicts with an existing booking",
+      },
+    });
+  }
+
+  const newBooking = await Booking.create({
+    spotId: spot.id,
+    userId: currentUser.id,
+    startDate,
+    endDate,
+  });
+
+  return res.status(200).json(newBooking);
 });
 
 module.exports = router;
