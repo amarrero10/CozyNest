@@ -44,7 +44,7 @@ const validateSpot = [
 
 // Get Spot by Id
 router.get("/:id", async (req, res) => {
-  const spotId = req.params.id;
+  const spotId = parseInt(req.params.id, 10);
 
   try {
     const spot = await Spot.findByPk(spotId, {
@@ -67,24 +67,24 @@ router.get("/:id", async (req, res) => {
         ],
       },
       group: [
-        "Spot.id",
-        "Spot.ownerId",
-        "Spot.address",
-        "Spot.city",
-        "Spot.state",
-        "Spot.country",
-        "Spot.lat",
-        "Spot.lon",
-        "Spot.name",
-        "Spot.description",
-        "Spot.price",
-        "Spot.avgRating",
-        "Spot.previewImage",
-        "Spot.createdAt",
-        "Spot.updatedAt",
-        "Owner.id",
-        "Owner.firstName",
-        "Owner.lastName",
+        '"Spot"."id"',
+        '"Spot"."ownerId"',
+        '"Spot"."address"',
+        '"Spot"."city"',
+        '"Spot"."state"',
+        '"Spot"."country"',
+        '"Spot"."lat"',
+        '"Spot"."lon"',
+        '"Spot"."name"',
+        '"Spot"."description"',
+        '"Spot"."price"',
+        '"Spot"."avgRating"',
+        '"Spot"."previewImage"',
+        '"Spot"."createdAt"',
+        '"Spot"."updatedAt"',
+        '"Owner"."id"',
+        '"Owner"."firstName"',
+        '"Owner"."lastName"',
       ].map((column) => Sequelize.literal(column)),
     });
 
