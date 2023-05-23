@@ -117,7 +117,7 @@ router.get("/", async (req, res) => {
       as: "Reviews",
       attributes: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
     },
-    group: ["Spot.id"], // Group by Spot.id to calculate average rating per spot
+    group: ["Spot.id", "Reviews.id"], // Group by Spot.id to calculate average rating per spot
   });
 
   if (!spots) {
