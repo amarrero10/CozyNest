@@ -127,7 +127,13 @@ router.get("/", async (req, res) => {
     return res.status(404).json({ message: "Spots not found" });
   }
 
-  return res.json(spots);
+  // To Get rid of trailing zeros
+  const formattedSpots = spots.map((spot) => ({
+    ...spot.toJSON(),
+    avgRating: parseFloat(spot.avgRating).toFixed(1),
+  }));
+
+  return res.json(formattedSpots);
 });
 
 // Add new spot
