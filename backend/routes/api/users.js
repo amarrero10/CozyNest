@@ -1,5 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const { Sequelize } = require("sequelize");
+const { Op } = require("sequelize");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
@@ -314,6 +316,63 @@ router.get("/current/bookings", requireAuth, async (req, res) => {
   });
 
   res.status(200).json(bookings);
+});
+
+// Edit a booking as current user
+// Edit a booking as the current user
+router.put("/current/bookings/:id", requireAuth, async (req, res) => {
+  const bookingId = req.params.id; // Get the bookingId from the route parameters
+  const { startDate, endDate } = req.body; // Get the updated start and end dates from the request body
+
+  // Find the booking by its ID
+  const booking = await Booking.findByPk(bookingId);
+
+  // Check if the booking exists
+  if (!booking) {
+    return res.status(404).json({ message: "Booking couldn't be found" });
+  }
+
+  // Check if the booking belongs to the current user (authorization)
+  if (booking.userId !== req.user.id) {
+    return res.status(403).json({ message: "Unauthorized to edit this booking" });
+  }
+
+  // Log the current booking's end date and the current date
+  console.log("Booking end date:", booking.endDate);
+  console.log("Current date:", new Date());
+
+  // Check if the booking's end date has already passed
+  if (new Date(booking.endDate) < new Date()) {
+    return res.status(403).json({ message: "Past bookings can't be modified" });
+  }
+
+  // Check if there is a booking conflict with the specified dates
+  const conflictingBooking = await Booking.findOne({
+    where: {
+      spotId: booking.spotId,
+      id: { [Sequelize.Op.not]: bookingId }, // Exclude the current booking from the query
+      startDate: { [Sequelize.Op.lte]: endDate },
+      endDate: { [Sequelize.Op.gte]: startDate },
+    },
+  });
+
+  if (conflictingBooking) {
+    return res.status(403).json({
+      message: "Sorry, this spot is already booked for the specified dates",
+      errors: {
+        startDate: "Start date conflicts with an existing booking",
+        endDate: "End date conflicts with an existing booking",
+      },
+    });
+  }
+
+  // Update the booking with the new start and end dates
+  booking.startDate = startDate;
+  booking.endDate = endDate;
+  await booking.save();
+
+  // Return the updated booking
+  return res.status(200).json(booking);
 });
 
 module.exports = router;
