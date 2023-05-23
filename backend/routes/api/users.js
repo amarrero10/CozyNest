@@ -318,7 +318,6 @@ router.get("/current/bookings", requireAuth, async (req, res) => {
   res.status(200).json(bookings);
 });
 
-// Edit a booking as current user
 // Edit a booking as the current user
 router.put("/current/bookings/:id", requireAuth, async (req, res) => {
   const bookingId = req.params.id; // Get the bookingId from the route parameters
@@ -336,10 +335,6 @@ router.put("/current/bookings/:id", requireAuth, async (req, res) => {
   if (booking.userId !== req.user.id) {
     return res.status(403).json({ message: "Unauthorized to edit this booking" });
   }
-
-  // Log the current booking's end date and the current date
-  console.log("Booking end date:", booking.endDate);
-  console.log("Current date:", new Date());
 
   // Check if the booking's end date has already passed
   if (new Date(booking.endDate) < new Date()) {
@@ -373,6 +368,40 @@ router.put("/current/bookings/:id", requireAuth, async (req, res) => {
 
   // Return the updated booking
   return res.status(200).json(booking);
+});
+
+// Delete a Booking
+router.delete("/current/bookings/:id", requireAuth, async (req, res) => {
+  const bookingId = req.params.id;
+  const currentUser = req.user;
+
+  try {
+    // Find the booking by its ID
+    const booking = await Booking.findByPk(bookingId);
+
+    // Check if the booking exists
+    if (!booking) {
+      return res.status(404).json({ message: "Booking couldn't be found" });
+    }
+
+    // Check if the booking belongs to the current user or the spot belongs to the current user (authorization)
+    if (booking.userId !== currentUser.id && booking.spot.ownerId !== currentUser.id) {
+      return res.status(403).json({ message: "Unauthorized to delete this booking" });
+    }
+
+    // Check if the booking has already started
+    if (new Date(booking.startDate) < new Date()) {
+      return res.status(403).json({ message: "Bookings that have been started can't be deleted" });
+    }
+
+    // Delete the booking
+    await booking.destroy();
+
+    return res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    return res.status(500).json({ message: "Error deleting booking" });
+  }
 });
 
 module.exports = router;

@@ -111,7 +111,14 @@ router.get("/:id", async (req, res) => {
 
 // GET all spots
 router.get("/", async (req, res) => {
-  const spots = await Spot.findAll();
+  const spots = await Spot.findAll({
+    include: {
+      model: Review,
+      as: "Reviews",
+      attributes: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
+    },
+    group: ["Spot.id"], // Group by Spot.id to calculate average rating per spot
+  });
 
   if (!spots) {
     return res.status(404).json({ message: "Spots not found" });
@@ -351,6 +358,99 @@ router.post("/:id/bookings", requireAuth, async (req, res) => {
   });
 
   return res.status(200).json(newBooking);
+});
+// Delete a Spot Image
+router.delete(":spotId/images/:imageId", requireAuth, async (req, res) => {
+  const spotId = req.params.spotId;
+  const imageId = req.params.imageId;
+  const currentUser = req.user;
+
+  try {
+    // Find the spot associated with the image
+    const spot = await Spot.findByPk(spotId);
+
+    // Check if the spot exists
+    if (!spot) {
+      return res.status(404).json({ message: "Spot not found" });
+    }
+
+    // Check if the spot belongs to the current user (authorization)
+    if (spot.ownerId !== currentUser.id) {
+      return res.status(403).json({ message: "Unauthorized to delete this image" });
+    }
+
+    // Find the image to delete
+    const image = await Image.findOne({
+      where: {
+        id: imageId,
+        imageableId: spotId,
+        imageableType: "spot",
+      },
+    });
+
+    // Check if the image exists
+    if (!image) {
+      return res.status(404).json({ message: "Spot Image not found" });
+    }
+
+    // Delete the image
+    await image.destroy();
+
+    return res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error("Error deleting spot image:", error);
+    return res.status(500).json({ message: "Error deleting spot image" });
+  }
+});
+
+// Delete a Review Image
+router.delete("/:spotId/reviews/:reviewId/images/:imageId", requireAuth, async (req, res) => {
+  const spotId = req.params.spotId;
+  const reviewId = req.params.reviewId;
+  const imageId = req.params.imageId;
+  const currentUser = req.user;
+
+  try {
+    // Find the review associated with the image
+    const review = await Review.findOne({
+      where: {
+        id: reviewId,
+        spotId: spotId,
+      },
+    });
+
+    // Check if the review exists
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Check if the review belongs to the current user (authorization)
+    if (review.userId !== currentUser.id) {
+      return res.status(403).json({ message: "Unauthorized to delete this image" });
+    }
+
+    // Find the image to delete
+    const image = await Image.findOne({
+      where: {
+        id: imageId,
+        imageableId: reviewId,
+        imageableType: "review",
+      },
+    });
+
+    // Check if the image exists
+    if (!image) {
+      return res.status(404).json({ message: "Review Image not found" });
+    }
+
+    // Delete the image
+    await image.destroy();
+
+    return res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error("Error deleting review image:", error);
+    return res.status(500).json({ message: "Error deleting review image" });
+  }
 });
 
 module.exports = router;
