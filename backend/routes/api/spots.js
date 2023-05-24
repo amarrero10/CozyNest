@@ -59,6 +59,13 @@ router.get("/:id", async (req, res) => {
           as: "Reviews",
           attributes: [],
         },
+        {
+          model: Image,
+          as: "SpotImages",
+          where: { imageableType: "Spot" }, // Filter images by the Spot model
+          required: false, // Use left join to include spots without images
+          attributes: ["id", "url", "preview"],
+        },
       ],
       attributes: {
         include: [
@@ -79,7 +86,6 @@ router.get("/:id", async (req, res) => {
         '"Spot"."description"',
         '"Spot"."price"',
         '"Spot"."avgRating"',
-        '"Spot"."previewImage"',
         '"Spot"."createdAt"',
         '"Spot"."updatedAt"',
         '"Owner"."id"',
@@ -112,11 +118,16 @@ router.get("/:id", async (req, res) => {
 // GET all spots
 router.get("/", async (req, res) => {
   const spots = await Spot.findAll({
-    include: {
-      model: Review,
-      as: "Reviews",
-      attributes: [],
-    },
+    include: [
+      { model: Review, as: "Reviews", attributes: [] },
+      {
+        model: Image, // Assuming you have an Image model associated with Spot
+        as: "Images",
+        attributes: ["url"], // Assuming the image URL is stored in the "url" attribute
+        required: false, // Use left join to include spots without images
+      },
+    ],
+
     attributes: {
       include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
     },
@@ -127,10 +138,10 @@ router.get("/", async (req, res) => {
     return res.status(404).json({ message: "Spots not found" });
   }
 
-  // To Get rid of trailing zeros
+  // To Get rid of trailing zeros and handle default value
   const formattedSpots = spots.map((spot) => ({
     ...spot.toJSON(),
-    avgRating: parseFloat(spot.avgRating).toFixed(1),
+    avgRating: spot.avgRating !== null ? parseFloat(spot.avgRating).toFixed(1) : "1",
   }));
 
   return res.json(formattedSpots);
@@ -409,56 +420,6 @@ router.delete(":spotId/images/:imageId", requireAuth, async (req, res) => {
   } catch (error) {
     console.error("Error deleting spot image:", error);
     return res.status(500).json({ message: "Error deleting spot image" });
-  }
-});
-
-// Delete a Review Image
-router.delete("/:spotId/reviews/:reviewId/images/:imageId", requireAuth, async (req, res) => {
-  const spotId = req.params.spotId;
-  const reviewId = req.params.reviewId;
-  const imageId = req.params.imageId;
-  const currentUser = req.user;
-
-  try {
-    // Find the review associated with the image
-    const review = await Review.findOne({
-      where: {
-        id: reviewId,
-        spotId: spotId,
-      },
-    });
-
-    // Check if the review exists
-    if (!review) {
-      return res.status(404).json({ message: "Review not found" });
-    }
-
-    // Check if the review belongs to the current user (authorization)
-    if (review.userId !== currentUser.id) {
-      return res.status(403).json({ message: "Unauthorized to delete this image" });
-    }
-
-    // Find the image to delete
-    const image = await Image.findOne({
-      where: {
-        id: imageId,
-        imageableId: reviewId,
-        imageableType: "review",
-      },
-    });
-
-    // Check if the image exists
-    if (!image) {
-      return res.status(404).json({ message: "Review Image not found" });
-    }
-
-    // Delete the image
-    await image.destroy();
-
-    return res.status(200).json({ message: "Successfully deleted" });
-  } catch (error) {
-    console.error("Error deleting review image:", error);
-    return res.status(500).json({ message: "Error deleting review image" });
   }
 });
 

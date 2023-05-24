@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
       // one-to-many with Review model
       Spot.hasMany(models.Review, { foreignKey: "spotId", as: "Reviews" });
       // one-to-many with Image model
-      Spot.hasMany(models.Image, { foreignKey: "imageableId" });
+      Spot.hasMany(models.Image, { foreignKey: "imageableId", as: "SpotImages" });
     }
   }
   Spot.init(
