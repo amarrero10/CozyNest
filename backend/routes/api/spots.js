@@ -122,7 +122,7 @@ router.get("/", async (req, res) => {
       { model: Review, as: "Reviews", attributes: [] },
       {
         model: Image, // Assuming you have an Image model associated with Spot
-        as: "Images",
+        as: "SpotImages",
         attributes: ["url"], // Assuming the image URL is stored in the "url" attribute
         required: false, // Use left join to include spots without images
       },

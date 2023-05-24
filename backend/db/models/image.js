@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         scope: {
           imageableType: "spot",
         },
-        as: "SpotImages",
+        // as: "SpotImages",
       });
 
       Image.belongsTo(models.Review, {
