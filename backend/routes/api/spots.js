@@ -380,7 +380,7 @@ router.post("/:id/bookings", requireAuth, async (req, res) => {
   return res.status(200).json(newBooking);
 });
 // Delete a Spot Image
-router.delete(":spotId/images/:imageId", requireAuth, async (req, res) => {
+router.delete("/:spotId/images/:imageId", requireAuth, async (req, res) => {
   const spotId = req.params.spotId;
   const imageId = req.params.imageId;
   const currentUser = req.user;
