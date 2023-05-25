@@ -62,6 +62,7 @@ router.get("/:id", async (req, res) => {
         {
           model: Image,
           as: "SpotImages",
+          required: false,
           where: { imageableType: "spot" },
           attributes: ["id", "url", "preview"],
         },
