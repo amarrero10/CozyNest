@@ -172,6 +172,10 @@ router.post("/:id/images", requireAuth, async (req, res) => {
       id: spotId,
       ownerId: userId,
     },
+    include: {
+      model: Image,
+      as: "SpotImages",
+    },
   });
 
   if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
@@ -185,13 +189,8 @@ router.post("/:id/images", requireAuth, async (req, res) => {
     preview,
   });
 
-  // Update the SpotImages value by adding the newly created image to the existing array
-  const spotImages = spot.SpotImages || [];
-  spotImages.push(image);
-
-  // Update the Spot model with the updated SpotImages value
-  spot.SpotImages = spotImages;
-  await spot.save(); // Save the changes to the database
+  // Update the SpotImages association by adding the newly created image to the spot
+  spot.SpotImages.push(image);
 
   // Exclude imageableId and imageableType properties from the response using destructuring
   const { imageableId, imageableType, createdAt, updatedAt, ...responseData } = image.toJSON();
