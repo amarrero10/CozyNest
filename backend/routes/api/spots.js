@@ -120,6 +120,39 @@ router.get("/:id", async (req, res) => {
 
 // GET All spots
 router.get("/", async (req, res) => {
+  const { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  // Validate query parameters
+  const errors = {};
+  if (page && (isNaN(page) || page < 1 || page > 10)) {
+    errors.page = "Page must be between 1 and 10";
+  }
+  if (size && (isNaN(size) || size < 1 || size > 20)) {
+    errors.size = "Size must be between 1 and 20";
+  }
+  if (minLat && (isNaN(minLat) || minLat < -90 || minLat > 90)) {
+    errors.minLat = "Minimum latitude is invalid";
+  }
+  if (maxLat && (isNaN(maxLat) || maxLat < -90 || maxLat > 90)) {
+    errors.maxLat = "Maximum latitude is invalid";
+  }
+  if (minLng && (isNaN(minLng) || minLng < -180 || minLng > 180)) {
+    errors.minLng = "Minimum longitude is invalid";
+  }
+  if (maxLng && (isNaN(maxLng) || maxLng < -180 || maxLng > 180)) {
+    errors.maxLng = "Maximum longitude is invalid";
+  }
+  if (minPrice && (isNaN(minPrice) || minPrice < 0)) {
+    errors.minPrice = "Minimum price must be greater than or equal to 0";
+  }
+  if (maxPrice && (isNaN(maxPrice) || maxPrice < 0)) {
+    errors.maxPrice = "Maximum price must be greater than or equal to 0";
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: "Validation error", errors });
+  }
+
   try {
     const spots = await Spot.findAll({
       include: [
@@ -133,6 +166,19 @@ router.get("/", async (req, res) => {
         include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
       },
       group: ["Spot.id"],
+      where: {
+        lat: {
+          [Op.between]: [minLat, maxLat],
+        },
+        lng: {
+          [Op.between]: [minLng, maxLng],
+        },
+        price: {
+          [Op.between]: [minPrice, maxPrice],
+        },
+      },
+      limit: size ? parseInt(size) : 20,
+      offset: page ? (parseInt(page) - 1) * (size ? parseInt(size) : 20) : 0,
     });
 
     const formattedSpots = spots.map((spot) => ({
@@ -153,7 +199,7 @@ router.get("/", async (req, res) => {
       previewImage: spot.previewImage,
     }));
 
-    return res.status(200).json({ Spots: formattedSpots });
+    return res.status(200).json({ Spots: formattedSpots, page: page || 1, size: size || 20 });
   } catch (error) {
     console.error("Error fetching spots:", error);
     return res.status(500).json({ message: "Error fetching spots" });
