@@ -139,7 +139,7 @@ router.get("/", async (req, res) => {
     avgRating: spot.avgRating !== null ? parseFloat(spot.avgRating).toFixed(1) : "1",
   }));
 
-  return res.json(formattedSpots);
+  return res.json({ Spots: formattedSpots });
 });
 
 // Add new spot
