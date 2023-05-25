@@ -6,7 +6,6 @@
 
 ![CozyNest (1)](https://user-images.githubusercontent.com/79298692/236353408-cce3a561-fa85-4f16-80b7-54309af580a2.png)
 
-
 ## API Documentation
 
 ## USER AUTHENTICATION/AUTHORIZATION
@@ -286,7 +285,7 @@ Returns all the spots.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lon": -122.4730327,
+          "lng": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -328,7 +327,7 @@ Returns all the spots owned (created) by the current user.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lon": -122.4730327,
+          "lng": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -368,7 +367,7 @@ Returns the details of a spot specified by its id.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lon": -122.4730327,
+      "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -429,7 +428,7 @@ Creates and returns a new spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lon": -122.4730327,
+      "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123
@@ -452,7 +451,7 @@ Creates and returns a new spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lon": -122.4730327,
+      "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -477,7 +476,7 @@ Creates and returns a new spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lon": "Longitude is not valid",
+        "lng": "lnggitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -555,7 +554,7 @@ Updates and returns an existing spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lon": -122.4730327,
+      "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123
@@ -578,7 +577,7 @@ Updates and returns an existing spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lon": -122.4730327,
+      "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -603,7 +602,7 @@ Updates and returns an existing spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lon": "Longitude is not valid",
+        "lng": "lnggitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -706,7 +705,7 @@ Returns all the reviews written by the current user.
             "state": "California",
             "country": "United States of America",
             "lat": 37.7645358,
-            "lon": -122.4730327,
+            "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
             "previewImage": "image url"
@@ -1065,7 +1064,7 @@ Return all the bookings that the current user has made.
             "state": "California",
             "country": "United States of America",
             "lat": 37.7645358,
-            "lon": -122.4730327,
+            "lng": -122.4730327,
             "name": "App Academy",
             "price": 123,
             "previewImage": "image url"
@@ -1465,6 +1464,7 @@ Delete an existing image for a Review.
     ```
 
 ## Add Query Filters to Get All Spots
+
 ----- DID NOT DO THIS PART----------
 Return spots filtered by query parameters.
 
@@ -1478,8 +1478,8 @@ Return spots filtered by query parameters.
     - size: integer, minimum: 1, maximum: 20, default: 20
     - minLat: decimal, optional
     - maxLat: decimal, optional
-    - minlon: decimal, optional
-    - maxlon: decimal, optional
+    - minlng: decimal, optional
+    - maxlng: decimal, optional
     - minPrice: decimal, optional, minimum: 0
     - maxPrice: decimal, optional, minimum: 0
   - Body: none
@@ -1502,7 +1502,7 @@ Return spots filtered by query parameters.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lon": -122.4730327,
+          "lng": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -1532,8 +1532,8 @@ Return spots filtered by query parameters.
         "size": "Size must be greater than or equal to 1",
         "maxLat": "Maximum latitude is invalid",
         "minLat": "Minimum latitude is invalid",
-        "minLon": "Maximum longitude is invalid",
-        "maxLon": "Minimum longitude is invalid",
+        "minlng": "Maximum lnggitude is invalid",
+        "maxlng": "Minimum lnggitude is invalid",
         "minPrice": "Minimum price must be greater than or equal to 0",
         "maxPrice": "Maximum price must be greater than or equal to 0"
       }
