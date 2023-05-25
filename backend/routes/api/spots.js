@@ -182,6 +182,14 @@ router.post("/:id/images", requireAuth, async (req, res) => {
     url,
     preview,
   });
+
+  // Update the SpotImages value by adding the newly created image to the existing array
+  const spotImages = spot.SpotImages || [];
+  spotImages.push(image);
+
+  // Update the Spot model with the updated SpotImages value
+  await spot.update({ SpotImages: spotImages });
+
   // Exclude imageableId and imageableType properties from the response using destructuring
   const { imageableId, imageableType, createdAt, updatedAt, ...responseData } = image.toJSON();
 
