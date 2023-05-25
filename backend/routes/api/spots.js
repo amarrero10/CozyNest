@@ -26,7 +26,7 @@ const validateSpot = [
     .isLength({ min: 3 })
     .withMessage("Country is required"),
   check("lat").exists({ checkFalsy: true }).isFloat().withMessage("Latitude is not valid"),
-  check("lon").exists({ checkFalsy: true }).isFloat().withMessage("Longitude is not valid."),
+  check("lng").exists({ checkFalsy: true }).isFloat().withMessage("lnggitude is not valid."),
   check("name")
     .exists({ checkFalsy: true })
     .isLength({ max: 50 })
@@ -81,7 +81,7 @@ router.get("/:id", async (req, res) => {
         '"Spot"."state"',
         '"Spot"."country"',
         '"Spot"."lat"',
-        '"Spot"."lon"',
+        '"Spot"."lng"',
         '"Spot"."name"',
         '"Spot"."description"',
         '"Spot"."price"',
@@ -144,7 +144,7 @@ router.get("/", async (req, res) => {
 
 // Add new spot
 router.post("/", validateSpot, requireAuth, async (req, res) => {
-  const { address, city, state, country, lat, lon, name, description, price } = req.body;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   const newSpot = await Spot.create({
     ownerId: req.user.id,
@@ -153,7 +153,7 @@ router.post("/", validateSpot, requireAuth, async (req, res) => {
     state,
     country,
     lat,
-    lon,
+    lng,
     name,
     description,
     price,
