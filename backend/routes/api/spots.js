@@ -91,6 +91,7 @@ router.get("/:id", async (req, res) => {
         '"Owner"."id"',
         '"Owner"."firstName"',
         '"Owner"."lastName"',
+        '"SpotImages"."id"',
       ].map((column) => Sequelize.literal(column)),
     });
 
