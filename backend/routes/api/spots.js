@@ -149,7 +149,7 @@ router.get("/", async (req, res) => {
       price: spot.price,
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
-      avgRating: spot.avgRating,
+      avgRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
       previewImage: spot.previewImage,
     }));
 
