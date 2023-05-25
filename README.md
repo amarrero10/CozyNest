@@ -1465,7 +1465,6 @@ Delete an existing image for a Review.
 
 ## Add Query Filters to Get All Spots
 
------ DID NOT DO THIS PART----------
 Return spots filtered by query parameters.
 
 - Require Authentication: false
