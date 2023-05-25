@@ -118,28 +118,41 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// GET all spots
+// GET All spots
 router.get("/", async (req, res) => {
-  const spots = await Spot.findAll({
-    include: [{ model: Review, as: "Reviews", attributes: [] }],
+  const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters, default to page 1 if not provided
+  const size = parseInt(req.query.size) || 10; // Get the page size from the query parameters, default to 10 if not provided
 
-    attributes: {
-      include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
-    },
-    group: ["Spot.id"],
-  });
+  const offset = (page - 1) * size; // Calculate the offset based on the page and size
 
-  if (!spots) {
-    return res.status(404).json({ message: "Spots not found" });
+  try {
+    const spots = await Spot.findAndCountAll({
+      include: [{ model: Review, as: "Reviews", attributes: [] }],
+      attributes: {
+        include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
+      },
+      group: ["Spot.id"],
+      offset: offset,
+      limit: size,
+    });
+
+    if (!spots) {
+      return res.status(404).json({ message: "Spots not found" });
+    }
+
+    // To get rid of trailing zeros and handle default value
+    const formattedSpots = spots.rows.map((spot) => ({
+      ...spot.toJSON(),
+      avgRating: spot.avgRating !== null ? parseFloat(spot.avgRating).toFixed(1) : "1",
+    }));
+
+    const totalPages = Math.ceil(spots.count / size); // Calculate the total number of pages based on the count and size
+
+    return res.json({ Spots: formattedSpots, totalPages });
+  } catch (error) {
+    console.error("Error fetching spots:", error);
+    return res.status(500).json({ message: "Error fetching spots" });
   }
-
-  // To Get rid of trailing zeros and handle default value
-  const formattedSpots = spots.map((spot) => ({
-    ...spot.toJSON(),
-    avgRating: spot.avgRating !== null ? parseFloat(spot.avgRating).toFixed(1) : "1",
-  }));
-
-  return res.json({ Spots: formattedSpots });
 });
 
 // Add new spot
