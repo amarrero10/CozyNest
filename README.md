@@ -1,5 +1,7 @@
 # `CozyNest`
 
+# https://cozynest.onrender.com
+
 ## Database Schema Design
 
 ![CozyNest (1)](https://user-images.githubusercontent.com/79298692/236353408-cce3a561-fa85-4f16-80b7-54309af580a2.png)
@@ -98,7 +100,7 @@ information.
 - Request
 
   - Method: POST
-  - URL: "/login"
+  - URL: "/session"
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -284,7 +286,7 @@ Returns all the spots.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lng": -122.4730327,
+          "lon": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -305,7 +307,7 @@ Returns all the spots owned (created) by the current user.
 - Request
 
   - Method: GET
-  - URL: "/users/current/spots
+  - URL: "/users/current/spots"
   - Body: none
 
 - Successful Response
@@ -326,7 +328,7 @@ Returns all the spots owned (created) by the current user.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lng": -122.4730327,
+          "lon": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -366,7 +368,7 @@ Returns the details of a spot specified by its id.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lng": -122.4730327,
+      "lon": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -427,7 +429,7 @@ Creates and returns a new spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lng": -122.4730327,
+      "lon": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123
@@ -450,7 +452,7 @@ Creates and returns a new spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lng": -122.4730327,
+      "lon": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -475,7 +477,7 @@ Creates and returns a new spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lng": "Longitude is not valid",
+        "lon": "Longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -492,7 +494,7 @@ Create and return a new image for a spot specified by id.
 - Request
 
   - Method: POST
-  - URL: "/spots/:id/image"
+  - URL: "/spots/:id/images"
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -553,7 +555,7 @@ Updates and returns an existing spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lng": -122.4730327,
+      "lon": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123
@@ -576,7 +578,7 @@ Updates and returns an existing spot.
       "state": "California",
       "country": "United States of America",
       "lat": 37.7645358,
-      "lng": -122.4730327,
+      "lon": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
@@ -601,7 +603,7 @@ Updates and returns an existing spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lng": "Longitude is not valid",
+        "lon": "Longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -670,7 +672,7 @@ Returns all the reviews written by the current user.
 - Request
 
   - Method: GET
-  - URL: "users/current/reviews
+  - URL: "users/current/reviews"
   - Body: none
 
 - Successful Response
@@ -704,7 +706,7 @@ Returns all the reviews written by the current user.
             "state": "California",
             "country": "United States of America",
             "lat": 37.7645358,
-            "lng": -122.4730327,
+            "lon": -122.4730327,
             "name": "App Academy",
             "price": 123,
             "previewImage": "image url"
@@ -869,7 +871,7 @@ Create and return a new image for a review specified by id.
 - Request
 
   - Method: POST
-  - URL: "users/current/reviews/:id/images
+  - URL: "users/current/reviews/:id/images"
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1063,7 +1065,7 @@ Return all the bookings that the current user has made.
             "state": "California",
             "country": "United States of America",
             "lat": 37.7645358,
-            "lng": -122.4730327,
+            "lon": -122.4730327,
             "name": "App Academy",
             "price": 123,
             "previewImage": "image url"
@@ -1242,7 +1244,7 @@ Update and return an existing booking.
 - Request
 
   - Method: PUT
-  - URL: "/bookings/:id"
+  - URL: "/users/current/bookings/:id"
   - Headers:
     - Content-Type: application/json
   - Body:
@@ -1342,7 +1344,7 @@ Delete an existing booking.
 - Request
 
   - Method: DELETE
-  - URL: "/booking/:id"
+  - URL: "users/current/bookings/:id"
   - Body: none
 
 - Successful Response
@@ -1395,7 +1397,6 @@ Delete an existing image for a Spot.
 - Request
 
   - Method: DELETE
-  <!-- ":id is named different above?? -->
   - URL: "spots/:spotId/images/:imageId"
   - Body: none
 
@@ -1434,7 +1435,7 @@ Delete an existing image for a Review.
 - Request
 
   - Method: DELETE
-  - URL: "/reviews/:id/images/:imageId"
+  - URL: "users/current/reviews/:reviewId/images/:imageId"
   - Body: none
 
 - Successful Response
@@ -1464,7 +1465,7 @@ Delete an existing image for a Review.
     ```
 
 ## Add Query Filters to Get All Spots
-
+----- DID NOT DO THIS PART----------
 Return spots filtered by query parameters.
 
 - Require Authentication: false
@@ -1477,8 +1478,8 @@ Return spots filtered by query parameters.
     - size: integer, minimum: 1, maximum: 20, default: 20
     - minLat: decimal, optional
     - maxLat: decimal, optional
-    - minLng: decimal, optional
-    - maxLng: decimal, optional
+    - minlon: decimal, optional
+    - maxlon: decimal, optional
     - minPrice: decimal, optional, minimum: 0
     - maxPrice: decimal, optional, minimum: 0
   - Body: none
@@ -1501,7 +1502,7 @@ Return spots filtered by query parameters.
           "state": "California",
           "country": "United States of America",
           "lat": 37.7645358,
-          "lng": -122.4730327,
+          "lon": -122.4730327,
           "name": "App Academy",
           "description": "Place where web developers are created",
           "price": 123,
@@ -1531,8 +1532,8 @@ Return spots filtered by query parameters.
         "size": "Size must be greater than or equal to 1",
         "maxLat": "Maximum latitude is invalid",
         "minLat": "Minimum latitude is invalid",
-        "minLng": "Maximum longitude is invalid",
-        "maxLng": "Minimum longitude is invalid",
+        "minLon": "Maximum longitude is invalid",
+        "maxLon": "Minimum longitude is invalid",
         "minPrice": "Minimum price must be greater than or equal to 0",
         "maxPrice": "Maximum price must be greater than or equal to 0"
       }
