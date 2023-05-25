@@ -120,41 +120,40 @@ router.get("/:id", async (req, res) => {
 
 // GET All spots
 router.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Get the page number from the query parameters, default to page 1 if not provided
-  const size = parseInt(req.query.size) || 10; // Get the page size from the query parameters, default to 10 if not provided
-
-  const offset = (page - 1) * size; // Calculate the offset based on the page and size
-
   try {
-    const spots = await Spot.findAndCountAll({
+    const spots = await Spot.findAll({
       include: [
         {
           model: Review,
-          as: "Reviews",
           attributes: [],
+          as: "Reviews",
         },
       ],
       attributes: {
         include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
       },
       group: ["Spot.id"],
-      offset: offset,
-      limit: size,
     });
 
-    if (!spots) {
-      return res.status(404).json({ message: "Spots not found" });
-    }
-
-    // To get rid of trailing zeros and handle default value
-    const formattedSpots = spots.rows.map((spot) => ({
-      ...spot.toJSON(),
-      avgRating: spot.avgRating !== null ? parseFloat(spot.avgRating).toFixed(1) : "1",
+    const formattedSpots = spots.map((spot) => ({
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lng,
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: spot.createdAt,
+      updatedAt: spot.updatedAt,
+      avgRating: spot.avgRating,
+      previewImage: spot.previewImage,
     }));
 
-    const totalPages = Math.ceil(spots.count / size); // Calculate the total number of pages based on the count and size
-
-    return res.json({ Spots: formattedSpots, totalPages });
+    return res.status(200).json({ Spots: formattedSpots });
   } catch (error) {
     console.error("Error fetching spots:", error);
     return res.status(500).json({ message: "Error fetching spots" });
