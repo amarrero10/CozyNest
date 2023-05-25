@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       // one-to-many with Booking model
       Spot.hasMany(models.Booking, { foreignKey: "spotId" });
       // one-to-many with Review model
-      Spot.hasMany(models.Review, { foreignKey: "spotId", as: "Reviews" });
+      Spot.hasMany(models.Review, { foreignKey: "spotId", as: "SpotReviews" });
       // one-to-many with Image model
       Spot.hasMany(models.Image, {
         foreignKey: "imageableId",
