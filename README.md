@@ -1435,7 +1435,7 @@ Delete an existing image for a Review.
 - Request
 
   - Method: DELETE
-  - URL: "users/current/reviews/:reviewId/images/:imageId"
+  - URL: "/spots/:spotId/reviews/:reviewId/images/:imageId"
   - Body: none
 
 - Successful Response
