@@ -194,7 +194,7 @@ router.get("/", async (req, res) => {
         [Op.between]: [minPrice, maxPrice],
       };
     }
-
+    console.log(spotOptions);
     const spots = await Spot.findAll(spotOptions);
 
     const formattedSpots = spots.map((spot) => ({
