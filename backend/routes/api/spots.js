@@ -426,4 +426,54 @@ router.delete("/:spotId/images/:imageId", requireAuth, async (req, res) => {
   }
 });
 
+// Delete a Review Image
+router.delete("/:spotId/reviews/:reviewId/images/:imageId", requireAuth, async (req, res) => {
+  const spotId = req.params.spotId;
+  const reviewId = req.params.reviewId;
+  const imageId = req.params.imageId;
+  const currentUser = req.user;
+
+  try {
+    // Find the review associated with the image
+    const review = await Review.findOne({
+      where: {
+        id: reviewId,
+        spotId: spotId,
+      },
+    });
+
+    // Check if the review exists
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    // Check if the review belongs to the current user (authorization)
+    if (review.userId !== currentUser.id) {
+      return res.status(403).json({ message: "Unauthorized to delete this image" });
+    }
+
+    // Find the image to delete
+    const image = await Image.findOne({
+      where: {
+        id: imageId,
+        imageableId: reviewId,
+        imageableType: "review",
+      },
+    });
+
+    // Check if the image exists
+    if (!image) {
+      return res.status(404).json({ message: "Review Image not found" });
+    }
+
+    // Delete the image
+    await image.destroy();
+
+    return res.status(200).json({ message: "Successfully deleted" });
+  } catch (error) {
+    console.error("Error deleting review image:", error);
+    return res.status(500).json({ message: "Error deleting review image" });
+  }
+});
+
 module.exports = router;
