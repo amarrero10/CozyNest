@@ -26,7 +26,7 @@ const validateSpot = [
     .isLength({ min: 3 })
     .withMessage("Country is required"),
   check("lat").exists({ checkFalsy: true }).isFloat().withMessage("Latitude is not valid"),
-  check("lng").exists({ checkFalsy: true }).isFloat().withMessage("lnggitude is not valid."),
+  check("lng").exists({ checkFalsy: true }).isFloat().withMessage("longitude is not valid."),
   check("name")
     .exists({ checkFalsy: true })
     .isLength({ max: 50 })
@@ -62,9 +62,8 @@ router.get("/:id", async (req, res) => {
         {
           model: Image,
           as: "SpotImages",
-          where: { imageableType: "Spot" }, // Filter images by the Spot model
-          required: false, // Use left join to include spots without images
-          attributes: ["id", "url"],
+          where: { imageableType: "spot" },
+          attributes: ["id", "url", "preview"],
         },
       ],
       attributes: {
@@ -74,93 +73,68 @@ router.get("/:id", async (req, res) => {
         ],
       },
       group: [
-        '"Spot"."id"',
-        '"Spot"."ownerId"',
-        '"Spot"."address"',
-        '"Spot"."city"',
-        '"Spot"."state"',
-        '"Spot"."country"',
-        '"Spot"."lat"',
-        '"Spot"."lng"',
-        '"Spot"."name"',
-        '"Spot"."description"',
-        '"Spot"."price"',
-        '"Spot"."avgRating"',
-        '"Spot"."createdAt"',
-        '"Spot"."updatedAt"',
-        '"Owner"."id"',
-        '"Owner"."firstName"',
-        '"Owner"."lastName"',
-        '"SpotImages"."id"',
-      ].map((column) => Sequelize.literal(column)),
+        // List all columns from Spot, Owner, and SpotImages
+        "Spot.id",
+        "Spot.ownerId",
+        "Spot.address",
+        "Spot.city",
+        "Spot.state",
+        "Spot.country",
+        "Spot.lat",
+        "Spot.lng",
+        "Spot.name",
+        "Spot.description",
+        "Spot.price",
+        "Spot.avgRating",
+        "Spot.createdAt",
+        "Spot.updatedAt",
+        "Owner.id",
+        "Owner.firstName",
+        "Owner.lastName",
+        "SpotImages.id",
+      ],
     });
-
-    console.log("SPOTIMAGES", spot.SpotImages);
 
     if (!spot) {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    const { numReviews, ...spotResponse } = spot.toJSON();
+    const formattedSpot = {
+      id: spot.id,
+      ownerId: spot.ownerId,
+      address: spot.address,
+      city: spot.city,
+      state: spot.state,
+      country: spot.country,
+      lat: spot.lat,
+      lng: spot.lon, // Assuming the 'lon' attribute exists in the Spot model
+      name: spot.name,
+      description: spot.description,
+      price: spot.price,
+      createdAt: spot.createdAt,
+      updatedAt: spot.updatedAt,
+      numReviews: spot.numReviews,
+      avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
+      SpotImages: spot.SpotImages.map((image) => ({
+        id: image.id,
+        url: image.url,
+        preview: image.preview,
+      })),
+      Owner: {
+        id: spot.Owner.id,
+        firstName: spot.Owner.firstName,
+        lastName: spot.Owner.lastName,
+      },
+    };
 
-    // Check if all spot properties are null
-    const allNullProperties = Object.values(spotResponse).every((value) => value === null);
-
-    // If all spot properties are null except 'numReviews', return the error response
-    if (allNullProperties && numReviews === 0) {
-      return res.status(404).json({ message: "Spot couldn't be found" });
-    }
-
-    res.status(200).json({ ...spotResponse, numReviews });
+    res.status(200).json(formattedSpot);
   } catch (error) {
     console.error("Error fetching spot:", error);
     res.status(500).json({ message: "Error fetching spot" });
   }
 });
 
-// GET All spots - WORKING
-// router.get("/", async (req, res) => {
-//   try {
-//     const spots = await Spot.findAll({
-//       include: [
-//         {
-//           model: Review,
-//           attributes: [],
-//           as: "SpotReviews",
-//         },
-//       ],
-//       attributes: {
-//         include: [[Sequelize.fn("AVG", Sequelize.col("SpotReviews.stars")), "avgRating"]],
-//       },
-//       group: ["Spot.id"],
-//     });
-
-//     const formattedSpots = spots.map((spot) => ({
-//       id: spot.id,
-//       ownerId: spot.ownerId,
-//       address: spot.address,
-//       city: spot.city,
-//       state: spot.state,
-//       country: spot.country,
-//       lat: spot.lat,
-//       lng: spot.lng,
-//       name: spot.name,
-//       description: spot.description,
-//       price: spot.price,
-//       createdAt: spot.createdAt,
-//       updatedAt: spot.updatedAt,
-//       avgRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-//       previewImage: spot.previewImage,
-//     }));
-
-//     return res.status(200).json({ Spots: formattedSpots });
-//   } catch (error) {
-//     console.error("Error fetching spots:", error);
-//     return res.status(500).json({ message: "Error fetching spots" });
-//   }
-// });
-
-// GET ALL SPOTS NOT WORKING
+// GET ALL SPOTS
 router.get("/", async (req, res) => {
   const { page = 1, size = 20, minLat, maxLat, minLon, maxLon, minPrice, maxPrice } = req.query;
 
