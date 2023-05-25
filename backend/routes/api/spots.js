@@ -42,7 +42,7 @@ const validateSpot = [
   handleValidationErrors,
 ];
 
-// Get Spot by Id
+// Get Spot details by Id
 router.get("/:id", async (req, res) => {
   const spotId = parseInt(req.params.id, 10);
 
@@ -94,6 +94,8 @@ router.get("/:id", async (req, res) => {
         '"SpotImages"."id"',
       ].map((column) => Sequelize.literal(column)),
     });
+
+    console.log("SPOTIMAGES", spot.SpotImages);
 
     if (!spot) {
       return res.status(404).json({ message: "Spot couldn't be found" });
