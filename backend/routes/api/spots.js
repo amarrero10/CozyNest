@@ -64,7 +64,7 @@ router.get("/:id", async (req, res) => {
           as: "SpotImages",
           where: { imageableType: "Spot" }, // Filter images by the Spot model
           required: false, // Use left join to include spots without images
-          attributes: ["id", "url", "preview"],
+          attributes: ["id", "url"],
         },
       ],
       attributes: {
