@@ -127,7 +127,13 @@ router.get("/", async (req, res) => {
 
   try {
     const spots = await Spot.findAndCountAll({
-      include: [{ model: Review, as: "Reviews", attributes: [] }],
+      include: [
+        {
+          model: Review,
+          as: "Reviews",
+          attributes: [],
+        },
+      ],
       attributes: {
         include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
       },
