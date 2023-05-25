@@ -476,7 +476,7 @@ Creates and returns a new spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lng": "lnggitude is not valid",
+        "lng": "longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -602,7 +602,7 @@ Updates and returns an existing spot.
         "state": "State is required",
         "country": "Country is required",
         "lat": "Latitude is not valid",
-        "lng": "lnggitude is not valid",
+        "lng": "longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
         "price": "Price per day is required"
@@ -1532,8 +1532,8 @@ Return spots filtered by query parameters.
         "size": "Size must be greater than or equal to 1",
         "maxLat": "Maximum latitude is invalid",
         "minLat": "Minimum latitude is invalid",
-        "minlng": "Maximum lnggitude is invalid",
-        "maxlng": "Minimum lnggitude is invalid",
+        "minlng": "Maximum longitude is invalid",
+        "maxlng": "Minimum longitude is invalid",
         "minPrice": "Minimum price must be greater than or equal to 0",
         "maxPrice": "Maximum price must be greater than or equal to 0"
       }
