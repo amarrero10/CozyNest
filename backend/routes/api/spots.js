@@ -5,17 +5,6 @@ const bcrypt = require("bcryptjs");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
-// DEBUGGING
-const config = require("../../config/database");
-const env = "development"; // Replace with the appropriate configuration name ('development', 'production', etc.)
-const sequelize = new Sequelize(config[env].database, config[env].username, config[env].password, {
-  dialect: config[env].dialect,
-  host: config[env].host,
-  // Add any additional options you need
-});
-
-sequelize.options.logging = true;
-
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
 const { User, Spot, Image, Review, Booking } = require("../../db/models");
 
@@ -128,7 +117,7 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: "Error fetching spot" });
   }
 });
-
+// GET ALL SPOTS NOT WORKING
 router.get("/", async (req, res) => {
   const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
