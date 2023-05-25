@@ -118,15 +118,7 @@ router.get("/:id", async (req, res) => {
 // GET all spots
 router.get("/", async (req, res) => {
   const spots = await Spot.findAll({
-    include: [
-      { model: Review, as: "Reviews", attributes: [] },
-      {
-        model: Image, // Assuming you have an Image model associated with Spot
-        as: "SpotImages",
-        attributes: ["url"], // Assuming the image URL is stored in the "url" attribute
-        required: false, // Use left join to include spots without images
-      },
-    ],
+    include: [{ model: Review, as: "Reviews", attributes: [] }],
 
     attributes: {
       include: [[Sequelize.fn("AVG", Sequelize.col("Reviews.stars")), "avgRating"]],
