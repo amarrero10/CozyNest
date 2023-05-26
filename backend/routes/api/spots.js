@@ -65,6 +65,8 @@ router.get("/:id", async (req, res) => {
           required: false,
           where: { imageableType: "spot", preview: true },
           attributes: ["id", "url", "preview"],
+          order: [["createdAt", "DESC"]],
+          limit: 1,
         },
       ],
       attributes: {
@@ -184,6 +186,8 @@ router.get("/", async (req, res) => {
           required: false,
           where: { imageableType: "spot", preview: true },
           attributes: ["url"],
+          order: [["createdAt", "DESC"]],
+          limit: 1,
         },
       ],
       attributes: {

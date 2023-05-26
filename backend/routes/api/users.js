@@ -112,6 +112,8 @@ router.get("/current/spots", requireAuth, async (req, res) => {
         required: false,
         where: { imageableType: "spot", preview: true },
         attributes: ["url"],
+        order: [["createdAt", "DESC"]],
+        limit: 1,
       },
     ],
   });
