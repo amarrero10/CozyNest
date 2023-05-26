@@ -65,10 +65,7 @@ router.get("/:id", async (req, res) => {
           required: false,
           where: { imageableType: "spot" },
           attributes: ["id", "url", "preview"],
-          order: [
-            ["preview", "DESC"],
-            ["createdAt", "DESC"],
-          ],
+          order: [["createdAt", "DESC"]],
         },
       ],
       attributes: {
@@ -106,6 +103,16 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
+    const spotImages = spot.SpotImages;
+    let previewImage = "No Images uploaded.";
+
+    for (let i = spotImages.length - 1; i >= 0; i--) {
+      if (spotImages[i].preview) {
+        previewImage = spotImages[i].url;
+        break;
+      }
+    }
+
     const formattedSpot = {
       id: spot.id,
       ownerId: spot.ownerId,
@@ -121,12 +128,9 @@ router.get("/:id", async (req, res) => {
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
       numReviews: spot.numReviews,
-      previewImage:
-        spot.SpotImages.length > 0
-          ? spot.SpotImages[spot.SpotImages.length - 1].url
-          : "No Images uploaded.",
+      previewImage,
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-      SpotImages: spot.SpotImages.map((image) => ({
+      SpotImages: spotImages.map((image) => ({
         id: image.id,
         url: image.url,
         preview: image.preview,
@@ -220,23 +224,29 @@ router.get("/", async (req, res) => {
       );
     }
 
-    const formattedSpots = filteredSpots.slice((page - 1) * size, page * size).map((spot) => ({
-      id: spot.id,
-      ownerId: spot.ownerId,
-      address: spot.address,
-      city: spot.city,
-      state: spot.state,
-      country: spot.country,
-      lat: spot.lat,
-      lng: spot.lng,
-      name: spot.name,
-      description: spot.description,
-      price: spot.price,
-      createdAt: spot.createdAt,
-      updatedAt: spot.updatedAt,
-      avgRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-      previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.",
-    }));
+    const formattedSpots = filteredSpots.slice((page - 1) * size, page * size).map((spot) => {
+      const spotImages = spot.SpotImages.filter((image) => image.preview === true);
+      const sortedImages = spotImages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const previewImage = sortedImages.length > 0 ? sortedImages[0].url : "No Images uploaded.";
+
+      return {
+        id: spot.id,
+        ownerId: spot.ownerId,
+        address: spot.address,
+        city: spot.city,
+        state: spot.state,
+        country: spot.country,
+        lat: spot.lat,
+        lng: spot.lng,
+        name: spot.name,
+        description: spot.description,
+        price: spot.price,
+        createdAt: spot.createdAt,
+        updatedAt: spot.updatedAt,
+        avgRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
+        previewImage,
+      };
+    });
 
     return res.status(200).json({ Spots: formattedSpots, page, size });
   } catch (error) {
