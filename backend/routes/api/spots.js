@@ -225,9 +225,8 @@ router.get("/", async (req, res) => {
     }
 
     const formattedSpots = filteredSpots.slice((page - 1) * size, page * size).map((spot) => {
-      const spotImages = spot.SpotImages.filter((image) => image.preview === true);
-      const sortedImages = spotImages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const previewImage = sortedImages.length > 0 ? sortedImages[0].url : "No Images uploaded.";
+      const previewImage =
+        spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.";
 
       return {
         id: spot.id,
