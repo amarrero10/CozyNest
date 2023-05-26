@@ -63,10 +63,12 @@ router.get("/:id", async (req, res) => {
           model: Image,
           as: "SpotImages",
           required: false,
-          where: { imageableType: "spot", preview: true },
+          where: { imageableType: "spot" },
           attributes: ["id", "url", "preview"],
-          order: [["createdAt", "DESC"]],
-          limit: 1,
+          order: [
+            ["preview", "DESC"],
+            ["createdAt", "DESC"],
+          ],
         },
       ],
       attributes: {
@@ -95,6 +97,8 @@ router.get("/:id", async (req, res) => {
         "Owner.firstName",
         "Owner.lastName",
         "SpotImages.id",
+        "SpotImages.url",
+        "SpotImages.preview",
       ],
     });
 
@@ -117,7 +121,10 @@ router.get("/:id", async (req, res) => {
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
       numReviews: spot.numReviews,
-      previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.",
+      previewImage:
+        spot.SpotImages.length > 0
+          ? spot.SpotImages[spot.SpotImages.length - 1].url
+          : "No Images uploaded.",
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
       SpotImages: spot.SpotImages.map((image) => ({
         id: image.id,
@@ -194,7 +201,7 @@ router.get("/", async (req, res) => {
       attributes: {
         include: [[Sequelize.fn("AVG", Sequelize.col("SpotReviews.stars")), "avgRating"]],
       },
-      group: ["Spot.id", "SpotImages.id"],
+      group: ["Spot.id"],
     });
 
     let filteredSpots = spots;
