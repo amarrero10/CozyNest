@@ -63,7 +63,7 @@ router.get("/:id", async (req, res) => {
           model: Image,
           as: "SpotImages",
           required: false,
-          where: { imageableType: "spot" },
+          where: { imageableType: "spot", preview: true },
           attributes: ["id", "url", "preview"],
         },
       ],
@@ -108,18 +108,18 @@ router.get("/:id", async (req, res) => {
       state: spot.state,
       country: spot.country,
       lat: spot.lat,
-      lng: spot.lon, // Assuming the 'lon' attribute exists in the Spot model
+      lng: spot.lng,
       name: spot.name,
       description: spot.description,
       price: spot.price,
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
       numReviews: spot.numReviews,
+      previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.",
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
       SpotImages: spot.SpotImages.map((image) => ({
         id: image.id,
         url: image.url,
-        preview: image.preview,
       })),
       Owner: {
         id: spot.Owner.id,
@@ -178,6 +178,13 @@ router.get("/", async (req, res) => {
           attributes: [],
           as: "SpotReviews",
         },
+        {
+          model: Image,
+          as: "SpotImages",
+          required: false,
+          where: { imageableType: "spot", preview: true },
+          attributes: ["url"],
+        },
       ],
       attributes: {
         include: [[Sequelize.fn("AVG", Sequelize.col("SpotReviews.stars")), "avgRating"]],
@@ -216,10 +223,10 @@ router.get("/", async (req, res) => {
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
       avgRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-      previewImage: spot.previewImage,
+      previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.",
     }));
 
-    return res.status(200).json({ Spots: formattedSpots });
+    return res.status(200).json({ Spots: formattedSpots, page, size });
   } catch (error) {
     console.error("Error fetching spots:", error);
     return res.status(500).json({ message: "Error fetching spots" });
