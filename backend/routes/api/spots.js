@@ -189,7 +189,7 @@ router.get("/", async (req, res) => {
       attributes: {
         include: [[Sequelize.fn("AVG", Sequelize.col("SpotReviews.stars")), "avgRating"]],
       },
-      group: ["Spot.id"],
+      group: ["Spot.id", "SpotImages.id"],
     });
 
     let filteredSpots = spots;

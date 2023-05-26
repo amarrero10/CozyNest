@@ -105,7 +105,17 @@ router.get("/current/spots", requireAuth, async (req, res) => {
     where: {
       ownerId: currentUser.id,
     },
+    include: [
+      {
+        model: Image,
+        as: "SpotImages",
+        required: false,
+        where: { imageableType: "spot", preview: true },
+        attributes: ["url"],
+      },
+    ],
   });
+
   const formattedSpots = spots.map((spot) => ({
     id: spot.id,
     ownerId: spot.ownerId,
@@ -121,7 +131,7 @@ router.get("/current/spots", requireAuth, async (req, res) => {
     createdAt: spot.createdAt,
     updatedAt: spot.updatedAt,
     avgRating: spot.avgRating,
-    previewImage: spot.previewImage,
+    previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null,
   }));
 
   res.status(200).json({ Spots: formattedSpots });
