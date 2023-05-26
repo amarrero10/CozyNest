@@ -154,6 +154,7 @@ router.get("/current/reviews", requireAuth, async (req, res) => {
       },
       {
         model: Spot,
+        as: "Spot",
         attributes: [
           "id",
           "ownerId",

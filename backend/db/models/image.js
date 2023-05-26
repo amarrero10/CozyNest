@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         scope: {
           imageableType: "review",
         },
+        as: "ReviewImages",
       });
     }
   }
