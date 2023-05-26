@@ -76,7 +76,7 @@ router.get("/:id", async (req, res) => {
         ],
       },
       group: [
-        // List all columns from Spot, Owner, and SpotImages
+        // List all columns from Spot, Owner, and Images
         "Spot.id",
         "Spot.ownerId",
         "Spot.address",
@@ -122,6 +122,7 @@ router.get("/:id", async (req, res) => {
       SpotImages: spot.SpotImages.map((image) => ({
         id: image.id,
         url: image.url,
+        preview: image.preview,
       })),
       Owner: {
         id: spot.Owner.id,
