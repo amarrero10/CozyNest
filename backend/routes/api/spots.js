@@ -204,7 +204,6 @@ router.get("/", async (req, res) => {
         {
           model: Image,
           as: "SpotImages",
-          required: false,
           where: { imageableType: "spot", preview: true },
           attributes: ["url"],
           order: [["createdAt", "DESC"]],
@@ -268,21 +267,46 @@ router.post("/", validateSpot, requireAuth, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price, previewImage } =
     req.body;
 
-  const newSpot = await Spot.create({
-    ownerId: req.user.id,
-    address,
-    city,
-    state,
-    country,
-    lat,
-    lng,
-    name,
-    description,
-    price,
-    previewImage,
-  });
+  let newSpot;
 
-  res.status(201).json(newSpot);
+  try {
+    // Create the new spot
+    newSpot = await Spot.create({
+      ownerId: req.user.id,
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    });
+
+    // Create the preview image if provided
+    if (previewImage) {
+      const image = await Image.create({
+        url: previewImage,
+        imageableType: "spot",
+        imageableId: newSpot.id,
+        preview: true,
+      });
+
+      newSpot.previewImage = image.url;
+    }
+
+    res.status(201).json(newSpot);
+  } catch (error) {
+    console.error("Error creating spot:", error);
+
+    // Rollback any changes if an error occurred
+    if (newSpot) {
+      await newSpot.destroy();
+    }
+
+    res.status(500).json({ message: "Error creating spot" });
+  }
 });
 
 // Add image to spot
