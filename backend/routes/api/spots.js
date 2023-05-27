@@ -136,7 +136,7 @@ router.get("/:id", async (req, res) => {
       price: spot.price,
       createdAt: spot.createdAt,
       updatedAt: spot.updatedAt,
-      numReviews: spot.numReviews,
+      numReviews: spot.getDataValue("numReviews"), // Access the calculated value of numReviews
       previewImage,
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
       SpotImages: spotImages.map((image) => ({
