@@ -383,8 +383,11 @@ router.post(
   requireAuth,
   [
     // Validate request body using express-validator
-    body("review").notEmpty().withMessage("Review text is required"),
-    body("stars").isInt({ min: 1, max: 5 }).withMessage("Stars must be an integer from 1 to 5"),
+    body("review").notEmpty().withMessage("Review text is required").withMessage("validationError"),
+    body("stars")
+      .isInt({ min: 1, max: 5 })
+      .withMessage("Stars must be an integer from 1 to 5")
+      .withMessage("validationError"),
   ],
   async (req, res) => {
     const errors = validationResult(req);
