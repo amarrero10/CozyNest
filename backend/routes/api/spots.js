@@ -357,13 +357,47 @@ router.put("/:id", requireAuth, validateSpot, async (req, res) => {
     },
   });
 
-  if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
+  if (!spot) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
 
-  await spot.update(req.body);
+  try {
+    // Update the spot with the provided data
+    await spot.update(req.body);
 
-  const updatedSpot = await Spot.findByPk(spotId);
+    // Update the preview image if provided
+    const { previewImage } = req.body;
+    if (previewImage) {
+      // Check if the spot already has a preview image
+      const existingImage = await Image.findOne({
+        where: {
+          imageableType: "spot",
+          imageableId: spot.id,
+          preview: true,
+        },
+      });
 
-  res.status(200).json(updatedSpot);
+      if (existingImage) {
+        // Update the existing preview image URL
+        await existingImage.update({ url: previewImage });
+      } else {
+        // Create a new preview image
+        await Image.create({
+          url: previewImage,
+          imageableType: "spot",
+          imageableId: spot.id,
+          preview: true,
+        });
+      }
+    }
+
+    const updatedSpot = await Spot.findByPk(spotId);
+
+    res.status(200).json(updatedSpot);
+  } catch (error) {
+    console.error("Error updating spot:", error);
+    res.status(500).json({ message: "Error updating spot" });
+  }
 });
 
 // Delete a Spot
