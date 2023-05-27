@@ -387,6 +387,23 @@ router.post(
     body("stars").isInt({ min: 1, max: 5 }).withMessage("Stars must be an integer from 1 to 5"),
   ],
   async (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      // There are validation errors
+      const errorResponse = {
+        message: "Bad Request",
+        errors: {},
+      };
+
+      // Extract the validation errors and add them to the error response
+      errors.array().forEach((error) => {
+        errorResponse.errors[error.param] = error.msg;
+      });
+
+      return res.status(400).json(errorResponse);
+    }
+
     const currentUser = req.user;
     const spotId = req.params.id;
     const { review, stars } = req.body;
