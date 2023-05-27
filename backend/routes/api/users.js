@@ -410,8 +410,10 @@ router.delete("/current/bookings/:id", requireAuth, async (req, res) => {
   const currentUser = req.user;
 
   try {
-    // Find the booking by its ID
-    const booking = await Booking.findByPk(bookingId);
+    // Find the booking by its ID and include the Spot model
+    const booking = await Booking.findByPk(bookingId, {
+      include: Spot,
+    });
 
     // Check if the booking exists
     if (!booking) {
@@ -419,7 +421,7 @@ router.delete("/current/bookings/:id", requireAuth, async (req, res) => {
     }
 
     // Check if the booking belongs to the current user or the spot belongs to the current user (authorization)
-    if (booking.userId !== currentUser.id && booking.spot.ownerId !== currentUser.id) {
+    if (booking.userId !== currentUser.id && booking.Spot.ownerId !== currentUser.id) {
       return res.status(403).json({ message: "Unauthorized to delete this booking" });
     }
 
