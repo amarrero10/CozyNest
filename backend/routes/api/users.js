@@ -277,7 +277,9 @@ router.post("/current/reviews/:id/images", requireAuth, async (req, res) => {
     url,
   });
 
-  res.status(200).json(newImage);
+  const { id, url: imageUrl } = newImage;
+
+  res.status(200).json({ id, url: imageUrl });
 });
 
 // Edit a Review as Current User
