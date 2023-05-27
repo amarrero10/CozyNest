@@ -1,9 +1,8 @@
 const express = require("express");
 const { Sequelize } = require("sequelize");
-const { body, validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
-const { check } = require("express-validator");
+const { body, validationResult, check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const { setTokenCookie, requireAuth } = require("../../utils/auth");
@@ -40,6 +39,15 @@ const validateSpot = [
     .exists({ checkFalsy: true })
     .isLength({ min: 1 })
     .withMessage("Price per day is required"),
+  handleValidationErrors,
+];
+
+const validateReview = [
+  check("review").exists({ checkFalsy: true }).withMessage("Review text is required."),
+  check("stars")
+    .exists({ checkFalsy: true })
+    .isInt({ min: 1, max: 5 })
+    .withMessage("Stars must be an integer from 1 to 5"),
   handleValidationErrors,
 ];
 
@@ -378,72 +386,42 @@ router.get("/:id/reviews", async (req, res) => {
 });
 
 // Create review based on the spots id
-router.post(
-  "/:id/reviews",
-  requireAuth,
-  [
-    // Validate request body using express-validator
-    body("review").notEmpty().withMessage({
-      msg: "Review text is required",
-    }),
-    body("stars").isInt({ min: 1, max: 5 }).withMessage({
-      msg: "Stars must be an integer from 1 to 5",
-    }),
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
+router.post("/:id/reviews", requireAuth, validateReview, async (req, res) => {
+  const currentUser = req.user;
+  const spotId = req.params.id;
+  const { review, stars } = req.body;
 
-    if (!errors.isEmpty()) {
-      // There are validation errors
-      const errorResponse = {
-        message: "Bad Request",
-        errors: {},
-      };
+  const spot = await Spot.findByPk(spotId);
 
-      // Extract the validation errors and add them to the error response
-      errors.array().forEach((error) => {
-        errorResponse.errors[error.param] = error.msg;
-      });
+  if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
 
-      return res.status(400).json(errorResponse);
-    }
+  if (spot.ownerId === currentUser)
+    return res
+      .status(403)
+      .json({ message: "Owners cannot create reviews for their own properties" });
 
-    const currentUser = req.user;
-    const spotId = req.params.id;
-    const { review, stars } = req.body;
-
-    const spot = await Spot.findByPk(spotId);
-
-    if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
-
-    if (spot.ownerId === currentUser)
-      return res
-        .status(403)
-        .json({ message: "Owners cannot create reviews for their own properties" });
-
-    const existingReview = await Review.findOne({
-      where: {
-        userId: currentUser.id,
-        spotId: spot.id,
-      },
-    });
-
-    if (existingReview) {
-      return res.status(500).json({
-        message: "User already has a review for this spot",
-      });
-    }
-
-    const newReview = await Review.create({
+  const existingReview = await Review.findOne({
+    where: {
       userId: currentUser.id,
       spotId: spot.id,
-      review,
-      stars,
-    });
+    },
+  });
 
-    res.status(201).json(newReview);
+  if (existingReview) {
+    return res.status(500).json({
+      message: "User already has a review for this spot",
+    });
   }
-);
+
+  const newReview = await Review.create({
+    userId: currentUser.id,
+    spotId: spot.id,
+    review,
+    stars,
+  });
+
+  res.status(201).json(newReview);
+});
 
 // GET booking based on Spot id
 router.get("/:id/bookings", requireAuth, async (req, res) => {
