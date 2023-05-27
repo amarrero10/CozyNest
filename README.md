@@ -4,7 +4,7 @@
 
 ## Database Schema Design
 
-![CozyNest (2)](https://github.com/amarrero10/CozyNest/assets/79298692/cbf51eb9-2cde-498b-882c-e0dc187060b3)
+![CozyNest (3)](https://github.com/amarrero10/CozyNest/assets/79298692/3a01af65-d3f2-4826-9823-e6f27859b994)
 
 ## API Documentation
 
