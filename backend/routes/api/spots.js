@@ -455,7 +455,7 @@ router.post("/:id/reviews", requireAuth, validateReview, async (req, res) => {
 
   if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
 
-  if (spot.ownerId === currentUser)
+  if (spot.ownerId === currentUser.id)
     return res
       .status(403)
       .json({ message: "Owners cannot create reviews for their own properties" });
