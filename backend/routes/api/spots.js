@@ -220,16 +220,20 @@ router.get("/", async (req, res) => {
 
     if (minLat && maxLat) {
       filteredSpots = filteredSpots.filter((spot) => spot.lat >= minLat && spot.lat <= maxLat);
-    }
-
-    if (minLon && maxLon) {
-      filteredSpots = filteredSpots.filter((spot) => spot.lng >= minLon && spot.lng <= maxLon);
+    } else if (minLat) {
+      filteredSpots = filteredSpots.filter((spot) => spot.lat >= minLat);
+    } else if (maxLat) {
+      filteredSpots = filteredSpots.filter((spot) => spot.lat <= maxLat);
     }
 
     if (minPrice && maxPrice) {
       filteredSpots = filteredSpots.filter(
         (spot) => spot.price >= minPrice && spot.price <= maxPrice
       );
+    } else if (minPrice) {
+      filteredSpots = filteredSpots.filter((spot) => spot.price >= minPrice);
+    } else if (maxPrice) {
+      filteredSpots = filteredSpots.filter((spot) => spot.price <= maxPrice);
     }
 
     const formattedSpots = filteredSpots.slice((page - 1) * size, page * size).map((spot) => {
