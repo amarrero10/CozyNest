@@ -38,7 +38,7 @@
   border-radius: 5px;
   border: 1px solid black;
   background-color: #f0f5e7;
-  transition: transform 1s;
+  transition: transform 0.7s;
 }
 
 .loginForm button:hover {
@@ -62,9 +62,6 @@
 
 .loginLabel > input {
   padding: 5px 0;
-}
-
-.last {
 }
 
 .errorContainer {
