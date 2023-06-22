@@ -351,7 +351,7 @@ router.get("/current/bookings", requireAuth, async (req, res) => {
     },
   });
 
-  res.status(200).json(bookings);
+  res.status(200).json({ Bookings: bookings });
 });
 
 // Edit a booking as the current user
