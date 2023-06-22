@@ -1,1 +1,12 @@
 /* TODO Add site wide styles */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Playfair+Display:wght@400;600&display=swap");
+
+html,
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Playfair Display", serif;
+  background-color: #f0f5e7;
+  color: #303646;
+}
