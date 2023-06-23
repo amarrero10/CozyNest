@@ -1,0 +1,140 @@
+.Navigation {
+  display: flex;
+  height: 130px;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 50px;
+  position: relative; /* Add relative positioning */
+}
+.nav-a > a {
+  text-decoration: none;
+  color: inherit;
+  padding: 5px 30px;
+  font-size: 1.2rem;
+}
+
+.nav-a > a:hover {
+  background-color: #30364694;
+  padding: 5px 30px;
+  color: white;
+  border-radius: 20px;
+}
+
+.Navigation a {
+  text-decoration: none;
+  color: inherit;
+  padding: 5px 30px;
+  font-size: 1.2rem;
+}
+
+a:hover {
+  background-color: #30364694;
+  padding: 5px 30px;
+  color: white;
+  border-radius: 20px;
+}
+
+.logo a:hover {
+  background-color: transparent;
+}
+
+.Navigation ul {
+  list-style: none;
+  display: flex;
+  width: 450px;
+  position: relative;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+  text-decoration: none;
+}
+
+.profile-nav ul {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  width: fit-content;
+  margin: 0;
+  padding: 0;
+  top: 100%; /* Position the menu below the button */
+  left: 0;
+  background-color: #303646;
+  color: black;
+  z-index: 1; /* Add a higher z-index to ensure the menu appears above other elements */
+  border-radius: 18px;
+}
+
+.hidden {
+  visibility: hidden;
+  height: 0;
+  text-align: center;
+}
+
+.profile-dropdown li {
+  padding: 10px;
+  width: fit-content;
+  color: white;
+}
+
+.profile-nav .icon-btn {
+  margin: 10px 0;
+}
+
+.li-links {
+  display: flex;
+  width: 60%;
+  justify-content: space-between;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #303646;
+  font-size: 1.6rem;
+  cursor: pointer;
+}
+
+.logout-btn {
+  padding: 0px 30px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: #303646;
+}
+
+.navLinks {
+  position: relative; /* Add relative positioning to the list container */
+}
+
+.navLinks li {
+  position: relative; /* Add relative positioning to each list item */
+}
+
+.profile-dropdown hr {
+  border: none; /* Remove the default border */
+  border-top: 1px solid #ccc; /* Add a custom border */
+  margin: 10px 0; /* Adjust the margin for spacing */
+  width: 80%; /* Set the width to 100% to occupy the entire width of the menu */
+}
+
+.profile-btn {
+  padding: 8px 30px;
+  margin-bottom: 10px;
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.profile-btn:hover {
+  padding: 8px 30px;
+  margin-bottom: 10px;
+  background-color: white;
+  color: #303646;
+  border-radius: 10px;
+  cursor: pointer;
+}

@@ -1,5 +1,6 @@
 .loginContainer {
   margin: 0 auto;
+  margin-top: 100px;
   width: 600px;
   height: 600px;
   display: flex;
@@ -46,6 +47,7 @@
   border: 1px solid #fff;
   color: white;
   transform: translateY(-5px);
+  cursor: pointer;
 }
 
 .loginLabel {
@@ -96,4 +98,8 @@
   100% {
     transform: translateX(0);
   }
+}
+.loginContainer a:hover {
+  background-color: transparent;
+  text-decoration: underline;
 }

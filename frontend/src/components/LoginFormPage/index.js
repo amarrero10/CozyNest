@@ -60,7 +60,7 @@ function LoginFormPage() {
         <p>
           Don't have an account?{" "}
           <span>
-            <Link to="/register">Register here!</Link>
+            <Link to="/signup">Register here!</Link>
           </span>
         </p>
 
