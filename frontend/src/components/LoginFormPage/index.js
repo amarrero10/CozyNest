@@ -5,7 +5,7 @@ import { Redirect } from "react-router-dom";
 import "./LoginForm.css";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
 
-function LoginFormPage() {
+function LoginFormPage({ closeModal }) {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
   const [credential, setCredential] = useState("");
@@ -14,10 +14,18 @@ function LoginFormPage() {
 
   if (sessionUser) return <Redirect to="/" />;
 
-  const handleSubmit = (e) => {
+  const loginDemo = () => {
+    dispatch(sessionActions.login({ credential: "Demo-lition", password: "password" }));
+    closeModal();
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
-    return dispatch(sessionActions.login({ credential, password })).catch(async (res) => {
+    try {
+      await dispatch(sessionActions.login({ credential, password }));
+      closeModal(); // Close the modal after successful login
+    } catch (res) {
       const data = await res.json();
       if (data && data.errors) {
         setErrors(data.errors);
@@ -25,8 +33,10 @@ function LoginFormPage() {
           setErrors({});
         }, 2500);
       }
-    });
+    }
   };
+
+  const isLoginFormInvalid = credential.length < 4 || password.length < 6;
 
   return (
     <div className="loginContainer">
@@ -55,7 +65,10 @@ function LoginFormPage() {
           </label>
         </div>
 
-        <button type="submit">Log In!</button>
+        <button type="submit" disabled={isLoginFormInvalid}>
+          Log In!
+        </button>
+        <button onClick={loginDemo}>Log in as Demo User</button>
 
         <p>
           Don't have an account?{" "}

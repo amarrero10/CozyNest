@@ -3,19 +3,19 @@
   height: 130px;
   justify-content: space-between;
   align-items: center;
-  margin: 0 50px;
-  position: relative; /* Add relative positioning */
+  position: relative;
 }
 .nav-a > a {
   text-decoration: none;
   color: inherit;
   padding: 5px 30px;
   font-size: 1.2rem;
+  margin-left: 60px;
 }
 
 .nav-a > a:hover {
-  background-color: #30364694;
   padding: 5px 30px;
+  background-color: #30364694;
   color: white;
   border-radius: 20px;
 }
@@ -27,15 +27,16 @@
   font-size: 1.2rem;
 }
 
-a:hover {
+.Navigation a:hover {
   background-color: #30364694;
-  padding: 5px 30px;
+  padding: 10px 30px;
   color: white;
   border-radius: 20px;
 }
 
-.logo a:hover {
+.company-name a:hover {
   background-color: transparent;
+  color: #303646;
 }
 
 .Navigation ul {
@@ -53,7 +54,7 @@ a:hover {
   display: flex;
   flex-direction: column;
   position: absolute;
-  width: fit-content;
+  width: 180px;
   margin: 0;
   padding: 0;
   top: 100%; /* Position the menu below the button */
@@ -74,6 +75,18 @@ a:hover {
   padding: 10px;
   width: fit-content;
   color: white;
+  font-size: 10px;
+}
+
+.profile-dropdown a {
+  padding: 10px;
+  width: fit-content;
+  color: white;
+  font-size: 10px;
+}
+
+.profile-dropdown li:first-child {
+  margin-top: 10px;
 }
 
 .profile-nav .icon-btn {
@@ -82,7 +95,7 @@ a:hover {
 
 .li-links {
   display: flex;
-  width: 60%;
+  width: 25%;
   justify-content: space-between;
 }
 
@@ -92,10 +105,55 @@ a:hover {
   color: #303646;
   font-size: 1.6rem;
   cursor: pointer;
+  padding: 5px 5px;
+  border: 1px solid #303646;
+  border-radius: 20px;
 }
 
 .logout-btn {
   padding: 0px 30px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: #303646;
+}
+
+.login-btn {
+  padding: 5px 30px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  color: #303646;
+  border: 1px solid #303646;
+  background-color: transparent;
+}
+
+.signup-btn {
+  padding: 5px 30px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  color: #303646;
+  border: 1px solid #303646;
+  background-color: transparent;
+}
+
+.login-btn:hover {
+  padding: 5px 31px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: #303646;
+}
+
+.signup-btn:hover {
+  padding: 5px 31px;
   font-size: 1.2rem;
   border-radius: 30px;
   border: none;
@@ -137,4 +195,51 @@ a:hover {
   color: #303646;
   border-radius: 10px;
   cursor: pointer;
+}
+
+.modal {
+  display: block;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.modal-hidden {
+  display: none;
+}
+
+.modal-content {
+  margin: 15% auto;
+  padding: 20px;
+  width: 80%;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-hidden {
+  display: none;
+}
+
+.fas {
+  padding-right: 5px;
+  padding-left: 5px;
 }

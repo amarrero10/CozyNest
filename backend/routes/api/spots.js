@@ -99,6 +99,7 @@ router.get("/:id", async (req, res) => {
         "Spot.avgRating",
         "Spot.createdAt",
         "Spot.updatedAt",
+        "Spot.previewImage",
         "Owner.id",
         "Owner.firstName",
         "Owner.lastName",
@@ -113,7 +114,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const spotImages = spot.SpotImages;
-    let previewImage = "No Images uploaded.";
+    let previewImage = spot.previewImage;
 
     for (let i = spotImages.length - 1; i >= 0; i--) {
       if (spotImages[i].preview) {
@@ -138,17 +139,29 @@ router.get("/:id", async (req, res) => {
       updatedAt: spot.updatedAt,
       numReviews: spot.getDataValue("numReviews"), // Access the calculated value of numReviews
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-      SpotImages: spotImages.map((image) => ({
-        id: image.id,
-        url: image.url,
-        preview: image.preview,
-      })),
+      SpotImages: [],
       Owner: {
         id: spot.Owner.id,
         firstName: spot.Owner.firstName,
         lastName: spot.Owner.lastName,
       },
     };
+
+    if (spot.previewImage) {
+      formattedSpot.SpotImages.push({
+        id: null,
+        url: spot.previewImage,
+        preview: true,
+      });
+    }
+
+    spotImages.forEach((image) => {
+      formattedSpot.SpotImages.push({
+        id: image.id,
+        url: image.url,
+        preview: image.preview,
+      });
+    });
 
     res.status(200).json(formattedSpot);
   } catch (error) {
@@ -236,8 +249,7 @@ router.get("/", async (req, res) => {
     }
 
     const formattedSpots = filteredSpots.slice((page - 1) * size, page * size).map((spot) => {
-      const previewImage =
-        spot.SpotImages.length > 0 ? spot.SpotImages[0].url : "No Images uploaded.";
+      const previewImage = spot.SpotImages.length > 0 ? spot.SpotImages[0].url : spot.previewImage;
 
       return {
         id: spot.id,

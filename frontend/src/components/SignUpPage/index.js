@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import "./SignUp.css";
 
-function SignupFormPage() {
+function SignupFormPage({ closeModal }) {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.session.user);
   const [email, setEmail] = useState("");
@@ -17,29 +17,47 @@ function SignupFormPage() {
 
   if (sessionUser) return <Redirect to="/" />;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
       setErrors({});
-      return dispatch(
-        sessionActions.signup({
-          email,
-          username,
-          firstName,
-          lastName,
-          password,
-        })
-      ).catch(async (res) => {
+      try {
+        await dispatch(
+          sessionActions.signup({
+            email,
+            username,
+            firstName,
+            lastName,
+            password,
+          })
+        );
+        closeModal(); // Close the modal after successful sign up
+      } catch (res) {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
         }
+      }
+    } else {
+      setErrors({
+        confirmPassword: "Confirm Password field must be the same as the Password field",
       });
     }
-    return setErrors({
-      confirmPassword: "Confirm Password field must be the same as the Password field",
-    });
   };
+
+  // Determine if the "Sign up" button should be disabled
+  const isSignupFormInvalid =
+    !email ||
+    !username ||
+    !firstName ||
+    !lastName ||
+    !password ||
+    !confirmPassword ||
+    username.length < 4 ||
+    password.length < 6 ||
+    password !== confirmPassword;
+
+  console.log(isSignupFormInvalid);
 
   return (
     <div className="SignUpContainer">
@@ -100,7 +118,9 @@ function SignupFormPage() {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up!</button>
+        <button type="submit" disabled={isSignupFormInvalid}>
+          Sign Up!
+        </button>
       </form>
     </div>
   );

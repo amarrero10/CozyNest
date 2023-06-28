@@ -1,0 +1,83 @@
+.spot-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem; /* Adjust the gap size as needed */
+}
+
+.large-image {
+  grid-column: 1 / 3;
+}
+
+.small-images {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem; /* Adjust the gap size as needed */
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  height: auto;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+.spot-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.spot-text {
+  width: 900px;
+}
+
+.spot-callout {
+  width: 400px;
+  border: 1px solid black;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  border-radius: 10px;
+}
+
+.mini-spot-details {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  align-items: flex-end;
+}
+.mini-spot-details span {
+  font-size: 20px;
+}
+
+.spot-callout button {
+  cursor: pointer;
+  width: 90%;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #303646;
+  color: white;
+  border-radius: 20px;
+  font-size: 16px;
+  transition: transform 0.7s;
+}
+
+.spot-callout button:hover {
+  transform: translateY(-5px);
+}
+
+.spot-review {
+  display: flex;
+  justify-content: space-between;
+  width: 110px;
+}
+
+.review-header {
+  display: flex;
+  width: 300px;
+  justify-content: space-between;
+}

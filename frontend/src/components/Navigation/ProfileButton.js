@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
 
@@ -36,22 +37,27 @@ function ProfileButton({ user }) {
   return (
     <div className="profile-nav">
       <button onClick={openMenu} className="icon-btn">
+        <i class="fas fa-solid fa-bars" />
         <i className="fas fa-user-circle " />
       </button>
       <ul className={`${ulClassName} `} ref={ulRef}>
-        <li>{user.username}</li>
-        <hr />
-        <li>
-          {user.firstName} {user.lastName}
-        </li>
-        <hr />
-        <li>{user.email}</li>
-        <hr />
-        <li>
-          <button onClick={logout} className="profile-btn">
-            Log out
-          </button>
-        </li>
+        {user ? (
+          <>
+            <li>Hello, {user.user.username}!</li>
+            <li>{user.user.email}</li>
+            <hr />
+            <Link to="/">Manage Spots</Link>
+            <Link to="/">Manage Reviews</Link>
+            <hr />
+            <li>
+              <button onClick={logout} className="profile-btn">
+                Log out
+              </button>
+            </li>
+          </>
+        ) : (
+          <li>Loading...</li> // Display a loading message while user data is being fetched
+        )}
       </ul>
     </div>
   );

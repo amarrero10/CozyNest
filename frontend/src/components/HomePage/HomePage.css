@@ -1,0 +1,68 @@
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-gap: 10px;
+  max-width: 1600px; /* Add max-width to limit the width of the grid */
+  margin: 0 auto;
+}
+
+.spot-card {
+  /* Remove the width property to allow auto-sizing based on the grid */
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 15px;
+  flex-grow: 1;
+  border: 1px solid lightgrey;
+  background-color: #f3f3f43a;
+}
+
+.spot-card img {
+  width: 100%; /* Adjust the width to fit the container */
+  height: 200px;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border-top-right-radius: 20px;
+  border-bottom-left-radius: 0px;
+}
+
+.spot-card h3,
+.spot-card p {
+  margin: 0;
+  text-align: left;
+}
+
+.spot-card h3 {
+  font-size: 12px;
+}
+
+.spot-card p {
+  font-size: 9px;
+}
+
+.spot-card span {
+  font-size: 9px;
+  font-weight: bold;
+}
+
+.spot-card button {
+  position: absolute;
+  padding: 10px 15px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  color: white;
+  background-color: #303646;
+  margin-left: 270px;
+  top: 245px;
+}
+
+.spot-grid a {
+  text-decoration: none;
+  color: #303646;
+}

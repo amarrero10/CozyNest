@@ -5,12 +5,29 @@ const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
 
 const setUser = (user) => {
+  if (!user) {
+    // Handle null user case (optional)
+    return {
+      type: SET_USER,
+      payload: null,
+    };
+  }
+
   return {
     type: SET_USER,
-    payload: user,
+    payload: {
+      user: {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    },
   };
 };
-
 const removeUser = () => {
   return {
     type: REMOVE_USER,

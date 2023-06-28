@@ -22,6 +22,7 @@ module.exports = {
           name: "Empire State Building",
           description: "A famous skyscraper in New York City",
           price: 2000,
+          previewImage: "https://www.esbnyc.com/sites/default/files/2020-01/ESB%20Day.jpg",
           // createdAt: new Date(),
           // updatedAt: new Date(),
         },
@@ -36,6 +37,8 @@ module.exports = {
           name: "Griffith Observatory",
           description: "An iconic observatory in Los Angeles",
           price: 1500,
+          previewImage:
+            "https://www.travelinusa.us/wp-content/uploads/sites/3/2017/11/Griffith-Observatory-Cosa-Vedere.jpg",
           // createdAt: new Date(),
           // updatedAt: new Date(),
         },
@@ -50,6 +53,8 @@ module.exports = {
           name: "Transamerica Pyramid",
           description: "A famous skyscraper in San Francisco",
           price: 1800,
+          previewImage:
+            "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Transamerica_Pyramid_from_Coit_Tower.jpg/1024px-Transamerica_Pyramid_from_Coit_Tower.jpg",
           // createdAt: new Date(),
           // updatedAt: new Date(),
         },
@@ -64,6 +69,8 @@ module.exports = {
           name: "Willis Tower",
           description: "A famous skyscraper in Chicago",
           price: 2200,
+          previewImage:
+            "https://images.ctfassets.net/2utl2lkm42va/2pMBw7lwGAaXwrHch8Ga6c/0366c5f498ae18550e6360cd90d16f06/hero8.jpg",
           // createdAt: new Date(),
           // updatedAt: new Date(),
         },
@@ -78,6 +85,8 @@ module.exports = {
           name: "Freedom Tower",
           description: "A historic tower in Miami",
           price: 1900,
+          previewImage:
+            "https://upload.wikimedia.org/wikipedia/commons/f/ff/Miami_Freedom_Tower_by_Tom_Schaefer.jpg",
           // createdAt: new Date(),
           // updatedAt: new Date(),
         },
