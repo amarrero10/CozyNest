@@ -25,8 +25,8 @@ const validateSpot = [
     .exists({ checkFalsy: true })
     .isLength({ min: 3 })
     .withMessage("Country is required"),
-  check("lat").exists({ checkFalsy: true }).isFloat().withMessage("Latitude is not valid"),
-  check("lng").exists({ checkFalsy: true }).isFloat().withMessage("longitude is not valid."),
+  check("lat").optional({ nullable: true }).isFloat().withMessage("Latitude is not valid"),
+  check("lng").optional({ nullable: true }).isFloat().withMessage("longitude is not valid."),
   check("name")
     .exists({ checkFalsy: true })
     .isLength({ max: 50 })
@@ -47,7 +47,7 @@ const validateReview = [
   check("stars")
     .exists({ checkFalsy: true })
     .isInt({ min: 1, max: 5 })
-    .withMessage("Stars must be an integer from 1 to 5"),
+    .withMessage("A star rating from 1 to 5 is required"),
   handleValidationErrors,
 ];
 
@@ -220,6 +220,7 @@ router.get("/", async (req, res) => {
           attributes: ["url"],
           order: [["createdAt", "DESC"]],
           limit: 1,
+          required: false,
         },
       ],
       attributes: {

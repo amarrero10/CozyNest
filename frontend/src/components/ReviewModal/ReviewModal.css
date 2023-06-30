@@ -1,0 +1,115 @@
+.ReviewModalContainer {
+  width: 600px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 5px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 50px;
+  border-radius: 20px;
+}
+
+.ReviewModalContainer h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.review-form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.review-form input,
+.review-form textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+.review-form p {
+  color: red;
+  margin-top: 5px;
+}
+
+.review-form .star-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-form .star-rating label {
+  margin-right: 5px;
+}
+
+.review-form .star-rating input[type="radio"] {
+  display: none;
+}
+
+.review-form .star-rating label:before {
+  content: "\2605";
+  font-size: 24px;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.review-form .star-rating input[type="radio"]:checked ~ label:before,
+.review-form .star-rating input[type="radio"]:hover ~ label:before {
+  color: #f1c40f;
+}
+
+.review-form button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #303646;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  font-size: 1.2rem;
+}
+
+.review-form button:hover {
+  background-color: #1a2133;
+  transform: translateY(-3px);
+}
+
+.review-form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  direction: rtl;
+}
+
+.stars span {
+  font-size: 2rem;
+  color: #ccc;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  direction: ltr;
+}
+
+.stars span.filled {
+  color: gold;
+}
+
+.stars span:hover,
+.stars span:hover ~ span {
+  color: gold;
+}
+
+textarea {
+  font-family: inherit;
+}

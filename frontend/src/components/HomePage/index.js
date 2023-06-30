@@ -19,7 +19,7 @@ function HomePage() {
   return (
     <div>
       <h1>Explore!</h1>
-      <div className="spot-grid">
+      <div className="spots-grid">
         {spots ? (
           spots.map((spot) => (
             <Link key={spot.id} to={`/spots/${spot.id}`}>

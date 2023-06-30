@@ -49,7 +49,7 @@ function Navigation({ isLoaded }) {
       <>
         <li>
           <div className="nav-a">
-            <NavLink exact to="/">
+            <NavLink exact to="/create-spot">
               Create a New Spot
             </NavLink>
           </div>

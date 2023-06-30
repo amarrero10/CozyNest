@@ -7,6 +7,8 @@ import Spot from "./components/Spot";
 import HomePage from "./components/HomePage";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
+import CreateSpot from "./components/CreateSpot";
+import MySpots from "./components/MySpots";
 
 function App() {
   const dispatch = useDispatch();
@@ -28,6 +30,12 @@ function App() {
           </Route>
           <Route path="/signup">
             <SignUpPage />
+          </Route>
+          <Route path="/my-spots">
+            <MySpots />
+          </Route>
+          <Route path="/create-spot">
+            <CreateSpot />
           </Route>
           <Route path="/spots/:id">
             <Spot />

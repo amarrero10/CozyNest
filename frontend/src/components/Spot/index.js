@@ -1,22 +1,65 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpot, fetchSpotReviews } from "../../store/spots";
+import { setUser } from "../../store/session";
 import "./SpotDetails.css";
+import { useHistory } from "react-router-dom";
+import ReviewModal from "../ReviewModal";
 
 const Spot = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const { id } = useParams();
+  const user = useSelector((state) => state.session.user);
   const spot = useSelector((state) => state.spots.spot);
   const reviews = useSelector((state) => state.spots.reviews);
+  const [reviewModal, setReviewModal] = useState(false);
+  const [showModalBackground, setShowModalBackground] = useState(false);
+
+  const openReviewModal = () => {
+    setReviewModal(true);
+    setShowModalBackground(true);
+    document.body.style.overflow = "hidden"; // Restore scroll
+  };
+
+  const closeReviewModal = () => {
+    setReviewModal(false);
+    setShowModalBackground(false); // Set showModalBackground to false
+    document.body.style.overflow = "auto"; // Restore scroll
+  };
+
+  const userHasReviewed = () => {
+    if (!user || !reviews) return false;
+
+    return reviews.some((review) => review.User.id === user.user.id);
+  };
+
+  const handlePostReview = () => {
+    openReviewModal();
+  };
 
   useEffect(() => {
-    dispatch(fetchSpot(id));
+    const fetchData = async () => {
+      try {
+        await dispatch(fetchSpot(id));
+        await dispatch(fetchSpotReviews(id));
+      } catch (error) {
+        // Redirect to homepage if spot doesn't exist
+        console.log("An error happened!");
+        history.push("/");
+      }
+    };
+
+    fetchData();
+  }, [dispatch, history, id]);
+
+  useEffect(() => {
     dispatch(fetchSpotReviews(id));
   }, [dispatch, id]);
 
   if (!spot) {
-    return <h1>Uh Oh, that spot doesn't exist</h1>;
+    return <p>Loading...</p>;
   }
 
   const handleReserve = () => {
@@ -25,104 +68,138 @@ const Spot = () => {
 
   return (
     <>
-      <div className="spot-details">
-        <div className="spot-heading">
-          <h1>{spot.name}</h1>
-          <p>
-            Location: {spot.city}, {spot.state}, {spot.country}
-          </p>
-        </div>
-        <div className="spot-images">
-          <div className="spot-grid">
-            <div className="large-image">
-              {spot.SpotImages.length > 0 && <img src={spot.SpotImages[0].url} alt="Large" />}
-            </div>
-            <div className="small-images">
-              {spot.SpotImages.slice(1, 5).map((image) => (
-                <img key={image.id} src={image.url} alt="Small" />
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="spot-info">
-          <div className="spot-text">
-            <p>
-              Hosted by {spot.Owner.firstName} {spot.Owner.lastName}
-            </p>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Id ornare arcu odio ut sem nulla pharetra
-              diam. Nulla porttitor massa id neque aliquam vestibulum morbi. Purus non enim praesent
-              elementum. Auctor neque vitae tempus quam. Ullamcorper velit sed ullamcorper morbi
-              tincidunt ornare massa eget. Viverra suspendisse potenti nullam ac. Mauris rhoncus
-              aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque. Nibh ipsum
-              consequat nisl vel pretium lectus quam id. Eget duis at tellus at urna condimentum
-              mattis. Enim facilisis gravida neque convallis. Dictum fusce ut placerat orci nulla.
-              Nulla facilisi cras fermentum odio eu feugiat pretium nibh. Laoreet sit amet cursus
-              sit amet dictum sit amet. Cursus in hac habitasse platea dictumst quisque sagittis
-              purus sit. Viverra orci sagittis eu volutpat odio facilisis mauris sit amet. Tristique
-              senectus et netus et malesuada fames ac turpis. Nunc sed augue lacus viverra vitae.
-              Est sit amet facilisis magna etiam. Adipiscing at in tellus integer feugiat
-              scelerisque varius morbi enim. Tellus pellentesque eu tincidunt tortor aliquam. Lorem
-              dolor sed viverra ipsum nunc aliquet. Enim sit amet venenatis urna. Massa enim nec dui
-              nunc mattis enim. Venenatis lectus magna fringilla urna. Est lorem ipsum dolor sit
-              amet consectetur adipiscing elit pellentesque. Consequat semper viverra nam libero.
-              Tempus egestas sed sed risus. Sed risus pretium quam vulputate dignissim suspendisse
-              in est. Tortor consequat id porta nibh venenatis cras sed felis eget. Praesent
-              tristique magna sit amet purus gravida. In fermentum et sollicitudin ac orci phasellus
-              egestas tellus. Faucibus a pellentesque sit amet porttitor eget dolor. Laoreet id
-              donec ultrices tincidunt arcu. Risus viverra adipiscing at in tellus integer.
-              Elementum integer enim neque volutpat ac. Curabitur gravida arcu ac tortor. Quisque id
-              diam vel quam elementum pulvinar etiam non quam. Tristique senectus et netus et
-              malesuada fames. Neque vitae tempus quam pellentesque nec nam aliquam. Ultrices
-              sagittis orci a scelerisque purus semper eget duis. Eu lobortis elementum nibh tellus
-              molestie nunc non blandit massa. Morbi quis commodo odio aenean sed adipiscing diam.
-              Pellentesque id nibh tortor id. Morbi tempus iaculis urna id volutpat. Rutrum tellus
-              pellentesque eu tincidunt tortor aliquam nulla. Bibendum enim facilisis gravida neque.
-              Blandit turpis cursus in hac habitasse platea. Egestas purus viverra accumsan in nisl
-              nisi scelerisque.
-            </p>
-          </div>
-          <div className="spot-callout">
-            <div className="mini-spot-details">
-              <div>
-                <p>
-                  <span>${spot.price}</span> night
-                </p>
-              </div>
-              <div className="spot-review">
-                <div>
-                  <p>&#9733; {spot.avgStarRating} </p>
-                </div>
-                <div>
-                  <p>{spot.numReviews} reviews</p>
-                </div>
+      {spot ? (
+        <>
+          {reviewModal && (
+            <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
+              <div className="modal-content">
+                <span className="close" onClick={closeReviewModal}>
+                  &times;
+                </span>
+                <ReviewModal closeModal={closeReviewModal} />
               </div>
             </div>
-            <button onClick={handleReserve}>Reserve</button>
-          </div>
-        </div>
-      </div>
-      <hr />
-      <div className="review-header">
-        <h2>&#9733; {spot.avgStarRating}</h2>
-        <h2>{spot.numReviews} reviews</h2>
-        {reviews.map((review) => {
-          return (
-            <div>
-              <h3>{review.User.firstName}</h3>
+          )}
+
+          <div className="spot-details">
+            <div className="spot-heading">
+              <h1>{spot.name}</h1>
               <p>
-                {new Date(review.updatedAt).toLocaleString("default", {
-                  month: "long",
-                  year: "numeric",
-                })}
+                Location: {spot.city}, {spot.state}, {spot.country}
               </p>
-              <ul>
-                <li>{review.review}</li>
-              </ul>
             </div>
-          );
-        })}
+            <div className="spot-images">
+              <div className="spot-grid">
+                <div className="large-image">
+                  {spot.SpotImages && spot.SpotImages.length > 0 && (
+                    <img src={spot.SpotImages[0].url} alt="Large" />
+                  )}
+                </div>
+                <div className="small-images">
+                  {spot.SpotImages && spot.SpotImages.length > 0 && (
+                    <img src={spot.SpotImages[0].url} alt="Small" />
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="spot-info">
+              <div className="spot-text">
+                <p>Hosted by {spot.Owner && `${spot.Owner.firstName} ${spot.Owner.lastName}`}</p>
+                <p>{spot.description}</p>
+              </div>
+              <div className="spot-callout">
+                <div className="mini-spot-details">
+                  <div>
+                    <p>
+                      <span>${spot.price}</span> night
+                    </p>
+                  </div>
+                  <div className="spot-review">
+                    <div>
+                      <p>{spot.avgStarRating >= 1 ? <>&#9733; {spot.avgStarRating}</> : ""} </p>
+                    </div>
+                    <div>
+                      <p>
+                        {spot.numReviews > 0
+                          ? spot.numReviews > 1
+                            ? `${spot.numReviews} reviews`
+                            : `${spot.numReviews} review`
+                          : "New!"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <button className="spot-btn" onClick={handleReserve}>
+                  Reserve
+                </button>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="review-header">
+            <h2>
+              {spot.avgStarRating >= 1 ? <>&#9733; {spot.avgStarRating}</> : <>&#9733; New!</>}
+            </h2>
+            <h2>
+              {spot.numReviews > 0
+                ? spot.numReviews > 1
+                  ? `${spot.numReviews} reviews`
+                  : `${spot.numReviews} review`
+                : ""}
+            </h2>
+          </div>
+          {user &&
+            user.user &&
+            spot.Owner &&
+            !userHasReviewed() &&
+            user.user.id !== spot.Owner.id && (
+              <button className="spot-btn post-review-btn" onClick={handlePostReview}>
+                Post Your Review!
+              </button>
+            )}
+        </>
+      ) : (
+        <p>Something's wrong</p>
+      )}
+
+      <div className="review-container">
+        {reviews && reviews.length > 0 ? (
+          reviews.map((review) => {
+            return (
+              <div key={review.id} className="review-cards">
+                <div className="review-info">
+                  <div>
+                    <i class=" fa fa-solid fa-comments"></i>
+                  </div>
+                  <div className="review-user-info">
+                    <h3>{review.User.firstName}</h3>
+                    <p>
+                      {new Date(review.updatedAt).toLocaleString("default", {
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="review-details">
+                  <p>
+                    arcu felis bibendum ut tristique et egestas quis ipsum suspendisse ultrices
+                    gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim sit amet
+                    venenatis urna cursus eget nunc scelerisque viverra mauris in aliquam sem
+                    fringilla ut morbi tincidunt augue interdum velit euismod in pellentesque massa
+                    placerat duis ultricies lacus sed turpis tincidunt id aliquet risus feugiat in
+                    ante metus dictum at tempor commodo ullamcorper a lacus vestibulum sed arcu non
+                    odio euismod lacinia at quis risus sed vulputate odio ut enim blandit volutpat
+                    maecenas volutpat blandit aliquam etiam erat velit scelerisque in dictum non
+                    consectetur a erat nam at lectus
+                  </p>
+                </div>
+              </div>
+            );
+          })
+        ) : (
+          <p>{!user ? "Be the first one to review!" : ""}</p>
+        )}
       </div>
     </>
   );
