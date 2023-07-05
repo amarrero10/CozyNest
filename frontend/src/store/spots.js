@@ -56,7 +56,7 @@ export const fetchSpotReviews = (spotId) => async (dispatch) => {
 };
 
 export const createSpot = (spot) => async (dispatch) => {
-  const { address, city, state, country, lat, lng, name, description, price } = spot;
+  const { address, city, state, country, lat, lng, name, description, price, previewImage } = spot;
   const response = await csrfFetch(`/api/spots`, {
     method: "POST",
     body: JSON.stringify({
@@ -69,6 +69,7 @@ export const createSpot = (spot) => async (dispatch) => {
       lng,
       description,
       price,
+      previewImage,
     }),
   });
 
@@ -95,6 +96,14 @@ export const addSpotImages = (image, spotId) => async (dispatch) => {
   dispatch(setSpotImages(data));
 
   return response;
+};
+
+export const userSpots = () => async (dispatch) => {
+  const response = await csrfFetch("/api/users/current/spots");
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setSpots(data.Spots));
+  }
 };
 
 // Define additional thunk actions as needed

@@ -51,7 +51,7 @@
   font-weight: bold;
 }
 
-.spot-card button {
+.spot-card .homepage-btn {
   position: absolute;
   padding: 10px 15px;
   border-radius: 50px;

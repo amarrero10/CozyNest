@@ -13,8 +13,6 @@ function HomePage() {
     dispatch(fetchSpots());
   }, [dispatch]);
 
-  const handleMoreInfo = () => {};
-
   // Render the spots data
   return (
     <div>
@@ -30,7 +28,9 @@ function HomePage() {
                 <p>{spot.address}</p>
                 <p>${spot.price} night</p>
                 {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
-                <button onClick={() => history.push(`/spots/${spot.id}`)}>More Info!</button>
+                <button className="homepage-btn" onClick={() => history.push(`/spots/${spot.id}`)}>
+                  More Info!
+                </button>
               </div>
             </Link>
           ))

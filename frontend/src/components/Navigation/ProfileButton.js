@@ -46,8 +46,12 @@ function ProfileButton({ user }) {
             <li>Hello, {user.user.username}!</li>
             <li>{user.user.email}</li>
             <hr />
-            <Link to="/my-spots">Manage Spots</Link>
-            <Link to="/my-reviews">Manage Reviews</Link>
+            <Link className="profile-btn-links" to="/my-spots">
+              Manage Spots
+            </Link>
+            <Link className="profile-btn-links" to="/my-reviews">
+              Manage Reviews
+            </Link>
             <hr />
             <li>
               <button onClick={logout} className="profile-btn">

@@ -30,7 +30,7 @@ const Spot = () => {
   };
 
   const userHasReviewed = () => {
-    if (!user || !reviews) return false;
+    if (!user || !Array.isArray(reviews)) return false;
 
     return reviews.some((review) => review.User.id === user.user.id);
   };
@@ -104,7 +104,7 @@ const Spot = () => {
             </div>
             <div className="spot-info">
               <div className="spot-text">
-                <p>Hosted by {spot.Owner && `${spot.Owner.firstName} ${spot.Owner.lastName}`}</p>
+                <h2>Hosted by {spot.Owner && `${spot.Owner.firstName} ${spot.Owner.lastName}`}</h2>
                 <p>{spot.description}</p>
               </div>
               <div className="spot-callout">
