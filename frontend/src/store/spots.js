@@ -6,6 +6,7 @@ const SET_SPOTS = "spots/setSpots";
 const SET_SPOT = "spots/setSpot";
 const SET_SPOT_REVIEWS = "spots/setSpotReviews";
 const SET_SPOT_IMAGES = "spots/setSpotImages";
+const DELETE_SPOT = "spots/deleteSpot";
 
 // Action Creators
 const setSpots = (spots) => ({
@@ -26,6 +27,11 @@ const setSpotReviews = (reviews) => ({
 const setSpotImages = (image) => ({
   type: SET_SPOT_IMAGES,
   payload: image,
+});
+
+const deleteSpot = (spotId) => ({
+  type: DELETE_SPOT,
+  payload: spotId,
 });
 
 // Thunk Actions
@@ -106,6 +112,17 @@ export const userSpots = () => async (dispatch) => {
   }
 };
 
+export const deleteASpot = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "DELETE",
+  });
+
+  if (response.ok) {
+    dispatch(deleteSpot(spotId));
+  }
+
+  return response;
+};
 // Define additional thunk actions as needed
 
 // Initial State
@@ -140,6 +157,11 @@ const spotsReducer = (state = initialState, action) => {
       return {
         ...state,
         images: action.payload,
+      };
+    case DELETE_SPOT:
+      return {
+        ...state,
+        spot: action.payload,
       };
     default:
       return state;

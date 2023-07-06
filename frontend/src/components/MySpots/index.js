@@ -1,45 +1,100 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./MySpots.css";
 import { useDispatch, useSelector } from "react-redux";
-import { userSpots } from "../../store/spots";
+import { userSpots, deleteASpot } from "../../store/spots";
 import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function MySpots() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const spots = useSelector((state) => state.spots.spots);
   const user = useSelector((state) => state.session.user);
+  const [selectedSpot, setSelectedSpot] = useState(null);
 
   useEffect(() => {
     if (user) {
       dispatch(userSpots());
+    } else {
+      history.push("/");
     }
-  }, [dispatch]);
+  }, [dispatch, user]);
+
+  const handleDelete = (spotId) => {
+    setSelectedSpot(spotId);
+  };
+
+  const confirmDelete = () => {
+    if (selectedSpot) {
+      dispatch(deleteASpot(selectedSpot))
+        .then(() => {
+          // Spot deleted successfully, handle any necessary actions or state updates
+          dispatch(userSpots()); // Fetch updated spots after deletion
+          setSelectedSpot(null); // Reset selected spot
+        })
+        .catch((error) => {
+          // Error occurred during deletion, handle it appropriately
+          console.log("Error deleting spot:", error);
+          setSelectedSpot(null); // Reset selected spot
+        });
+    }
+  };
+
+  const cancelDelete = () => {
+    setSelectedSpot(null); // Reset selected spot
+  };
+
   return (
     <>
       <h2>Manage your spots</h2>
-      <button>Create a New Spot</button>
-      <div className="spots-grid">
-        {spots ? (
-          spots.map((spot) => (
-            <div className="spot-card">
-              <Link key={spot.id} to={`/spots/${spot.id}`}>
-                <img src={`${spot.previewImage}`} alt="view of the Spot from outside" />
-                <h3>{spot.name}</h3>
-                <p>{spot.description}</p>
-                <p>{spot.address}</p>
-                <p>${spot.price} night</p>
-                {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
-              </Link>
-              <div className="my-spot-btns">
-                <button className="spot-update-btn">Update Spot</button>
-                <button className="spot-delete-btn">Delete</button>
+      <button className="new-spot-btn">Create a New Spot</button>
+      <div className="my-spot-container">
+        <div className="spots-grid">
+          {spots.length > 0 && user ? (
+            spots.map((spot) => (
+              <div className="spot-card my-spot-card">
+                <Link key={spot.id} to={`/spots/${spot.id}`}>
+                  <img
+                    className="my-spot-img"
+                    src={`${spot.previewImage}`}
+                    alt="view of the Spot from outside"
+                  />
+                  <h3>{spot.name}</h3>
+                  <p>
+                    {spot.city}, {spot.state}
+                  </p>
+                  <p>${spot.price} night</p>
+                  {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
+                </Link>
+                <div className="my-spot-btns">
+                  <button className="spot-update-btn">Update Spot</button>
+                  <button className="spot-delete-btn" onClick={() => handleDelete(spot.id)}>
+                    Delete
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>Loading spots...</p>
-        )}
+            ))
+          ) : (
+            <h2 className="no-spots">No Spots yet! Click the button above to create a spot.</h2>
+          )}
+        </div>
       </div>
+      {selectedSpot && (
+        <div className="my-spot-modal">
+          <div className="my-spot-modal-content">
+            <h3>Confirm Spot Deletion</h3>
+            <p>Are you sure you want to delete this spot?</p>
+            <div className="my-spot-modal-buttons">
+              <button className="my-spot-modal-delete-btn" onClick={confirmDelete}>
+                Yes, delete the spot
+              </button>
+              <button className="my-spot-modal-cancel-btn" onClick={cancelDelete}>
+                Nevermind, I changed my mind
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

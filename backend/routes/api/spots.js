@@ -116,13 +116,6 @@ router.get("/:id", async (req, res) => {
     const spotImages = spot.SpotImages;
     let previewImage = spot.previewImage;
 
-    for (let i = spotImages.length - 1; i >= 0; i--) {
-      if (spotImages[i].preview) {
-        previewImage = spotImages[i].url;
-        break;
-      }
-    }
-
     const formattedSpot = {
       id: spot.id,
       ownerId: spot.ownerId,
@@ -147,21 +140,21 @@ router.get("/:id", async (req, res) => {
       },
     };
 
-    if (spot.previewImage) {
+    if (spotImages.length > 0) {
+      spotImages.forEach((image) => {
+        formattedSpot.SpotImages.push({
+          id: image.id,
+          url: image.url,
+          preview: image.preview,
+        });
+      });
+    } else if (spot.previewImage) {
       formattedSpot.SpotImages.push({
         id: null,
         url: spot.previewImage,
         preview: true,
       });
     }
-
-    spotImages.forEach((image) => {
-      formattedSpot.SpotImages.push({
-        id: image.id,
-        url: image.url,
-        preview: image.preview,
-      });
-    });
 
     res.status(200).json(formattedSpot);
   } catch (error) {

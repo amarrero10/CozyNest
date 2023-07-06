@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpot, fetchSpotReviews } from "../../store/spots";
-import { setUser } from "../../store/session";
 import "./SpotDetails.css";
 import { useHistory } from "react-router-dom";
 import ReviewModal from "../ReviewModal";
@@ -85,7 +84,7 @@ const Spot = () => {
             <div className="spot-heading">
               <h1>{spot.name}</h1>
               <p>
-                Location: {spot.city}, {spot.state}, {spot.country}
+                Location: {spot.city}, {spot.state} {spot.country}
               </p>
             </div>
             <div className="spot-images">
@@ -95,13 +94,20 @@ const Spot = () => {
                     <img src={spot.SpotImages[0].url} alt="Large" />
                   )}
                 </div>
-                <div className="small-images">
-                  {spot.SpotImages && spot.SpotImages.length > 0 && (
-                    <img src={spot.SpotImages[0].url} alt="Small" />
-                  )}
+                <div
+                  className={`small-images ${
+                    spot.SpotImages && spot.SpotImages.length > 5 ? "hide-extra" : ""
+                  }`}
+                >
+                  {spot.SpotImages &&
+                    spot.SpotImages.length > 1 &&
+                    spot.SpotImages.slice(1, 6).map((image) => (
+                      <img key={image.id} src={image.url} alt="Small" />
+                    ))}
                 </div>
               </div>
             </div>
+
             <div className="spot-info">
               <div className="spot-text">
                 <h2>Hosted by {spot.Owner && `${spot.Owner.firstName} ${spot.Owner.lastName}`}</h2>
@@ -182,17 +188,7 @@ const Spot = () => {
                   </div>
                 </div>
                 <div className="review-details">
-                  <p>
-                    arcu felis bibendum ut tristique et egestas quis ipsum suspendisse ultrices
-                    gravida dictum fusce ut placerat orci nulla pellentesque dignissim enim sit amet
-                    venenatis urna cursus eget nunc scelerisque viverra mauris in aliquam sem
-                    fringilla ut morbi tincidunt augue interdum velit euismod in pellentesque massa
-                    placerat duis ultricies lacus sed turpis tincidunt id aliquet risus feugiat in
-                    ante metus dictum at tempor commodo ullamcorper a lacus vestibulum sed arcu non
-                    odio euismod lacinia at quis risus sed vulputate odio ut enim blandit volutpat
-                    maecenas volutpat blandit aliquam etiam erat velit scelerisque in dictum non
-                    consectetur a erat nam at lectus
-                  </p>
+                  <p>{review.review}</p>
                 </div>
               </div>
             );

@@ -1,5 +1,90 @@
 .my-spot-btns {
   display: flex;
-  width: 500px;
-  color: red;
+  position: absolute;
+  justify-content: space-between;
+  width: 190px;
+  left: 215px;
+  top: 235px;
+}
+
+.my-spot-btns button {
+  background-color: #303646;
+  color: #fff;
+  padding: 15px 15px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+}
+
+.new-spot-btn {
+  margin-bottom: 20px;
+}
+
+.my-spot-container {
+  padding: 20px 0;
+}
+
+.no-spots {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.my-spot-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+.my-spot-modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.my-spot-modal-content h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.my-spot-modal-content p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.my-spot-modal-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.my-spot-modal-delete-btn,
+.my-spot-modal-cancel-btn {
+  padding: 8px 16px;
+  margin: 0 10px;
+  background-color: #383e51;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.my-spot-modal-delete-btn:hover,
+.my-spot-modal-cancel-btn:hover {
+  background-color: #303646;
+}
+
+.my-spot-card a {
+  width: 100%;
 }

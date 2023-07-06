@@ -24,10 +24,11 @@ function HomePage() {
               <div className="spot-card">
                 <img src={`${spot.previewImage}`} alt="view of the Spot from outside" />
                 <h3>{spot.name}</h3>
-                <p>{spot.description}</p>
-                <p>{spot.address}</p>
+                <p>
+                  {spot.city}, {spot.state}
+                </p>
                 <p>${spot.price} night</p>
-                {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
+                {spot.avgRating === 0 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
                 <button className="homepage-btn" onClick={() => history.push(`/spots/${spot.id}`)}>
                   More Info!
                 </button>
