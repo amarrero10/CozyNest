@@ -50,7 +50,7 @@ function MySpots() {
       <button className="new-spot-btn">Create a New Spot</button>
       <div className="my-spot-container">
         <div className="spots-grid">
-          {spots.length > 0 && user ? (
+          {spots.length > 0 ? (
             spots.map((spot) => (
               <div className="spot-card my-spot-card">
                 <Link key={spot.id} to={`/spots/${spot.id}`}>
@@ -58,6 +58,7 @@ function MySpots() {
                     className="my-spot-img"
                     src={`${spot.previewImage}`}
                     alt="view of the Spot from outside"
+                    key={spot.previewImage}
                   />
                   <h3>{spot.name}</h3>
                   <p>
@@ -66,8 +67,12 @@ function MySpots() {
                   <p>${spot.price} night</p>
                   {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
                 </Link>
+
                 <div className="my-spot-btns">
-                  <button className="spot-update-btn">Update Spot</button>
+                  <Link to={{ pathname: "/edit-spot", state: { spot } }}>
+                    <button className="spot-update-btn">Update Spot</button>
+                  </Link>
+
                   <button className="spot-delete-btn" onClick={() => handleDelete(spot.id)}>
                     Delete
                   </button>

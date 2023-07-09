@@ -123,6 +123,33 @@ export const deleteASpot = (spotId) => async (dispatch) => {
 
   return response;
 };
+
+export const editSpot = (spot, spotId) => async (dispatch) => {
+  const { address, city, state, country, lat, lng, name, description, price, previewImage } = spot;
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "PUT",
+    body: JSON.stringify({
+      name,
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      description,
+      price,
+      previewImage,
+    }),
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setSpot(data));
+  }
+
+  return response;
+};
+
 // Define additional thunk actions as needed
 
 // Initial State

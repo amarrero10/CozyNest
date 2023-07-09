@@ -14,16 +14,15 @@ module.exports = (sequelize, DataTypes) => {
         scope: {
           imageableType: "spot",
         },
-        as: "SpotImages",
+        as: "Spot",
       });
-
       Image.belongsTo(models.Review, {
         foreignKey: "imageableId",
         constraints: false,
         scope: {
           imageableType: "review",
         },
-        as: "ReviewImages",
+        as: "Review",
       });
     }
   }

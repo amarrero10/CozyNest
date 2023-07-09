@@ -1,27 +1,30 @@
-import "./CreateSpot.css";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import "./EditSpot.css";
+import { editSpot } from "../../store/spots";
 import { useHistory } from "react-router-dom";
-import { createSpot } from "../../store/spots";
+import { useDispatch, useSelector } from "react-redux";
 
-function CreateSpot() {
+function EditSpot({ location }) {
+  const { spot } = location.state;
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const history = useHistory();
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [country, setCountry] = useState("");
-  const [lat, setLat] = useState("");
-  const [lng, setLng] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState(0);
-  const [previewImage, setPreviewImage] = useState("");
+  const [name, setName] = useState(spot.name || "");
+  const [address, setAddress] = useState(spot.address || "");
+  const [city, setCity] = useState(spot.city || "");
+  const [state, setState] = useState(spot.state || "");
+  const [country, setCountry] = useState(spot.country || "");
+  const [lat, setLat] = useState(spot.lat || "");
+  const [lng, setLng] = useState(spot.lng || "");
+  const [description, setDescription] = useState(spot.description || "");
+  const [price, setPrice] = useState(spot.price || 0);
+  const [previewImage, setPreviewImage] = useState(spot.previewImage || "");
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Preview Image:", previewImage);
     setErrors({});
 
     // Perform custom validation checks
@@ -78,18 +81,9 @@ function CreateSpot() {
     // If there are validation errors, update the errors state and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      const formButton = document.querySelector(".create-spot-form button");
-      formButton.classList.add("shake");
-
-      // Remove the shake class after the animation finishes
-      setTimeout(() => {
-        formButton.classList.remove("shake");
-      }, 300);
-
-      return;
+      // Rest of the code...
     }
 
-    // If no validation errors, proceed with submitting the form
     // If no validation errors, proceed with submitting the form
     const formData = {
       name,
@@ -104,10 +98,9 @@ function CreateSpot() {
       previewImage,
     };
 
-    // Dispatch the appropriate action based on whether it's creating or editing a spot
     try {
-      // Creating a new spot
-      await dispatch(createSpot(formData));
+      // Update the spot using the editSpot action
+      await dispatch(editSpot(formData, spot.id));
 
       // Redirect or handle any necessary actions after successful submission
       history.push("/my-spots");
@@ -121,7 +114,7 @@ function CreateSpot() {
 
   return (
     <div className="create-spot-container">
-      <h2>Create a new Spot</h2>
+      <h2>Update Your Spot</h2>
       <h3>Where's your place located? To get started please fill out the form below.</h3>
       <p>Guests will only have access to your address once they make a reservation.</p>
 
@@ -228,11 +221,11 @@ function CreateSpot() {
         {errors.previewImage && <span className="error">{errors.previewImage}</span>}
 
         <button type="submit" className={Object.keys(errors).length > 0 ? "shake" : ""}>
-          Create your spot!
+          Update your spot!
         </button>
       </form>
     </div>
   );
 }
 
-export default CreateSpot;
+export default EditSpot;

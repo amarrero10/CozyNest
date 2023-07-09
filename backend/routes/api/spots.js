@@ -52,6 +52,116 @@ const validateReview = [
 ];
 
 // Get Spot details by Id
+// router.get("/:id", async (req, res) => {
+//   const spotId = parseInt(req.params.id, 10);
+
+//   try {
+//     const spot = await Spot.findByPk(spotId, {
+//       include: [
+//         {
+//           model: User,
+//           as: "Owner",
+//           attributes: ["id", "firstName", "lastName"],
+//         },
+//         {
+//           model: Review,
+//           as: "SpotReviews",
+//           attributes: [],
+//         },
+//         {
+//           model: Image,
+//           as: "SpotImages",
+//           required: false,
+//           where: { imageableType: "spot" },
+//           attributes: ["id", "url", "preview"],
+//           order: [["createdAt", "DESC"]],
+//         },
+//       ],
+//       attributes: {
+//         include: [
+//           [Sequelize.fn("AVG", Sequelize.col("SpotReviews.stars")), "avgRating"],
+//           [Sequelize.fn("COUNT", Sequelize.col("SpotReviews.id")), "numReviews"],
+//         ],
+//       },
+//       group: [
+//         // List all columns from Spot, Owner, and Images
+//         "Spot.id",
+//         "Spot.ownerId",
+//         "Spot.address",
+//         "Spot.city",
+//         "Spot.state",
+//         "Spot.country",
+//         "Spot.lat",
+//         "Spot.lng",
+//         "Spot.name",
+//         "Spot.description",
+//         "Spot.price",
+//         "Spot.avgRating",
+//         "Spot.createdAt",
+//         "Spot.updatedAt",
+//         "Spot.previewImage",
+//         "Owner.id",
+//         "Owner.firstName",
+//         "Owner.lastName",
+//         "SpotImages.id",
+//         "SpotImages.url",
+//         "SpotImages.preview",
+//       ],
+//     });
+
+//     if (!spot) {
+//       return res.status(404).json({ message: "Spot couldn't be found" });
+//     }
+
+//     const spotImages = spot.SpotImages;
+//     let primaryImage = null;
+
+//     const formattedSpot = {
+//       id: spot.id,
+//       ownerId: spot.ownerId,
+//       address: spot.address,
+//       city: spot.city,
+//       state: spot.state,
+//       country: spot.country,
+//       lat: spot.lat,
+//       lng: spot.lng,
+//       name: spot.name,
+//       description: spot.description,
+//       price: spot.price,
+//       createdAt: spot.createdAt,
+//       updatedAt: spot.updatedAt,
+//       numReviews: spot.getDataValue("numReviews"), // Access the calculated value of numReviews
+//       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
+//       SpotImages: [],
+//       Owner: {
+//         id: spot.Owner.id,
+//         firstName: spot.Owner.firstName,
+//         lastName: spot.Owner.lastName,
+//       },
+//     };
+
+//     if (spotImages.length > 0) {
+//       // Sort the spotImages in descending order based on createdAt
+//       spotImages.sort((a, b) => b.createdAt - a.createdAt);
+//       primaryImage = spotImages[0];
+//     } else {
+//       // If no preview images, set the first image as the primary image
+//       primaryImage = spotImages[0];
+//     }
+
+//     formattedSpot.SpotImages = spotImages.map((image) => ({
+//       id: image.id,
+//       url: image.url,
+//       preview: image.preview,
+//     }));
+
+//     res.status(200).json(formattedSpot);
+//   } catch (error) {
+//     console.error("Error fetching spot:", error);
+//     res.status(500).json({ message: "Error fetching spot" });
+//   }
+// });
+
 router.get("/:id", async (req, res) => {
   const spotId = parseInt(req.params.id, 10);
 
@@ -114,7 +224,7 @@ router.get("/:id", async (req, res) => {
     }
 
     const spotImages = spot.SpotImages;
-    let previewImage = spot.previewImage;
+    let primaryImage = null;
 
     const formattedSpot = {
       id: spot.id,
@@ -140,21 +250,21 @@ router.get("/:id", async (req, res) => {
       },
     };
 
-    if (spotImages.length > 0) {
-      spotImages.forEach((image) => {
-        formattedSpot.SpotImages.push({
-          id: image.id,
-          url: image.url,
-          preview: image.preview,
-        });
-      });
-    } else if (spot.previewImage) {
-      formattedSpot.SpotImages.push({
+    const formattedSpotImages = spot.SpotImages.map((image) => ({
+      id: image.id,
+      url: image.url,
+      preview: image.preview,
+    }));
+
+    if (spot.previewImage) {
+      formattedSpotImages.unshift({
         id: null,
         url: spot.previewImage,
         preview: true,
       });
     }
+
+    formattedSpot.SpotImages = formattedSpotImages;
 
     res.status(200).json(formattedSpot);
   } catch (error) {
@@ -209,11 +319,11 @@ router.get("/", async (req, res) => {
         {
           model: Image,
           as: "SpotImages",
+          required: false,
           where: { imageableType: "spot", preview: true },
           attributes: ["url"],
           order: [["createdAt", "DESC"]],
           limit: 1,
-          required: false,
         },
       ],
       attributes: {
@@ -374,11 +484,12 @@ router.put("/:id", requireAuth, validateSpot, async (req, res) => {
     // Update the spot with the provided data
     await spot.update(req.body);
 
-    // Update the preview image if provided
     const { previewImage } = req.body;
+
+    console.log("PREVIEWIMAGE", { previewImage });
     if (previewImage) {
       // Check if the spot already has a preview image
-      const existingImage = await Image.findOne({
+      const existingPreviewImage = await Image.findOne({
         where: {
           imageableType: "spot",
           imageableId: spot.id,
@@ -386,18 +497,13 @@ router.put("/:id", requireAuth, validateSpot, async (req, res) => {
         },
       });
 
-      if (existingImage) {
-        // Update the existing preview image URL
-        await existingImage.update({ url: previewImage });
-      } else {
-        // Create a new preview image
-        await Image.create({
-          url: previewImage,
-          imageableType: "spot",
-          imageableId: spot.id,
-          preview: true,
-        });
-      }
+      // Create a new preview image
+      await Image.create({
+        url: previewImage,
+        imageableType: "spot",
+        imageableId: spot.id,
+        preview: true,
+      });
     }
 
     const updatedSpot = await Spot.findByPk(spotId);

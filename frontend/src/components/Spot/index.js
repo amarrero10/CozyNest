@@ -15,6 +15,7 @@ const Spot = () => {
   const reviews = useSelector((state) => state.spots.reviews);
   const [reviewModal, setReviewModal] = useState(false);
   const [showModalBackground, setShowModalBackground] = useState(false);
+  const [spotUpdated, setSpotUpdated] = useState(false); // New state variable
 
   const openReviewModal = () => {
     setReviewModal(true);
@@ -38,6 +39,16 @@ const Spot = () => {
     openReviewModal();
   };
 
+  const updateSpotData = async () => {
+    try {
+      await dispatch(fetchSpot(id));
+      await dispatch(fetchSpotReviews(id));
+    } catch (error) {
+      console.log("An error happened!");
+      history.push("/");
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -51,11 +62,14 @@ const Spot = () => {
     };
 
     fetchData();
-  }, [dispatch, history, id]);
+  }, [dispatch, id]);
 
   useEffect(() => {
-    dispatch(fetchSpotReviews(id));
-  }, [dispatch, id]);
+    if (spot && spotUpdated) {
+      updateSpotData();
+      setSpotUpdated(false);
+    }
+  }, [spotUpdated]); // Use spotUpdated as the dependency
 
   if (!spot) {
     return <p>Loading...</p>;
@@ -91,7 +105,7 @@ const Spot = () => {
               <div className="spot-grid">
                 <div className="large-image">
                   {spot.SpotImages && spot.SpotImages.length > 0 && (
-                    <img src={spot.SpotImages[0].url} alt="Large" />
+                    <img src={spot.SpotImages[spot.SpotImages.length - 1].url} alt="Large" />
                   )}
                 </div>
                 <div
@@ -101,9 +115,11 @@ const Spot = () => {
                 >
                   {spot.SpotImages &&
                     spot.SpotImages.length > 1 &&
-                    spot.SpotImages.slice(1, 6).map((image) => (
-                      <img key={image.id} src={image.url} alt="Small" />
-                    ))}
+                    spot.SpotImages.slice(1, 6)
+                      .filter(
+                        (image) => image.id !== spot.SpotImages[spot.SpotImages.length - 1].id
+                      )
+                      .map((image) => <img key={image.id} src={image.url} alt="Small" />)}
                 </div>
               </div>
             </div>

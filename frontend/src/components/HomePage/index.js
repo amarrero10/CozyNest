@@ -21,7 +21,7 @@ function HomePage() {
         {spots ? (
           spots.map((spot) => (
             <Link key={spot.id} to={`/spots/${spot.id}`}>
-              <div className="spot-card">
+              <div className="spot-card" key={spot.id}>
                 <img src={`${spot.previewImage}`} alt="view of the Spot from outside" />
                 <h3>{spot.name}</h3>
                 <p>

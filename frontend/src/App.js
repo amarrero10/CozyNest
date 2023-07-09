@@ -9,6 +9,7 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import CreateSpot from "./components/CreateSpot";
 import MySpots from "./components/MySpots";
+import EditSpot from "./components/EditSpot";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,10 @@ function App() {
           <Route path="/my-spots">
             <MySpots />
           </Route>
+          <Route
+            path="/edit-spot"
+            render={({ location }) => <EditSpot location={location} />}
+          ></Route>
           <Route path="/create-spot">
             <CreateSpot />
           </Route>
