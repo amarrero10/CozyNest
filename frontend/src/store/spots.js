@@ -79,11 +79,16 @@ export const createSpot = (spot) => async (dispatch) => {
     }),
   });
 
-  const data = await response.json();
+  if (!response.ok) {
+    // Handle the case where the request was not successful
+    throw new Error("Failed to create spot");
+  }
 
-  dispatch(setSpotReviews(data));
+  const createdSpot = await response.json();
 
-  return response;
+  dispatch(setSpot(createdSpot));
+
+  return createdSpot;
 };
 
 export const addSpotImages = (image, spotId) => async (dispatch) => {

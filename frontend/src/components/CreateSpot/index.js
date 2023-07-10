@@ -2,7 +2,7 @@ import "./CreateSpot.css";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { createSpot } from "../../store/spots";
+import { createSpot, addSpotImages } from "../../store/spots";
 
 function CreateSpot() {
   const dispatch = useDispatch();
@@ -18,6 +18,7 @@ function CreateSpot() {
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
   const [previewImage, setPreviewImage] = useState("");
+  const [spotImages, setSpotImages] = useState([]);
   const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
@@ -107,7 +108,14 @@ function CreateSpot() {
     // Dispatch the appropriate action based on whether it's creating or editing a spot
     try {
       // Creating a new spot
-      await dispatch(createSpot(formData));
+      const spot = await dispatch(createSpot(formData));
+      console.log("SPOT", spot);
+      const spotId = spot.id;
+
+      // Add spot images
+      for (const image of spotImages) {
+        await dispatch(addSpotImages(image, spotId));
+      }
 
       // Redirect or handle any necessary actions after successful submission
       history.push("/my-spots");
@@ -115,6 +123,13 @@ function CreateSpot() {
       // Handle any submission errors
       console.log("Error:", error);
     }
+  };
+
+  const handleImageChange = (index, value) => {
+    const updatedImages = [...spotImages];
+    const updatedImage = { id: index, url: value, preview: index === 0 };
+    updatedImages[index] = updatedImage;
+    setSpotImages(updatedImages);
   };
 
   if (!user) return history.push("/");
@@ -218,16 +233,31 @@ function CreateSpot() {
         <input
           type="text"
           required
-          placeholder="Image URL"
+          placeholder="Preview Image URL"
           value={previewImage}
           onChange={(e) => {
             setPreviewImage(e.target.value);
           }}
           className={errors.previewImage ? "error-input" : ""}
-        ></input>
+        />
         {errors.previewImage && <span className="error">{errors.previewImage}</span>}
 
-        <button type="submit" className={Object.keys(errors).length > 0 ? "shake" : ""}>
+        {[0, 1, 2, 3].map((index) => (
+          <input
+            key={index}
+            type="text"
+            required
+            placeholder={`Image URL ${index + 1}`}
+            value={spotImages[index]?.url || ""}
+            onChange={(e) => handleImageChange(index, e.target.value)}
+            className={errors.spotImages ? "error-input" : ""}
+          />
+        ))}
+
+        <button
+          type="submit"
+          className={`create-spot-btn ${Object.keys(errors).length > 0 ? "shake" : ""}`}
+        >
           Create your spot!
         </button>
       </form>
