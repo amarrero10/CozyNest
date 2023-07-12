@@ -103,7 +103,7 @@ function EditSpot({ location }) {
       await dispatch(editSpot(formData, spot.id));
 
       // Redirect or handle any necessary actions after successful submission
-      history.push("/my-spots");
+      history.push(`/spots/${spot.id}`);
     } catch (error) {
       // Handle any submission errors
       console.log("Error:", error);

@@ -10,6 +10,7 @@ import Navigation from "./components/Navigation";
 import CreateSpot from "./components/CreateSpot";
 import MySpots from "./components/MySpots";
 import EditSpot from "./components/EditSpot";
+import MyReviews from "./components/MyReviews";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,6 +35,9 @@ function App() {
           </Route>
           <Route path="/my-spots">
             <MySpots />
+          </Route>
+          <Route path="/my-reviews">
+            <MyReviews />
           </Route>
           <Route
             path="/edit-spot"

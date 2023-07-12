@@ -72,19 +72,24 @@
 .my-spot-modal-cancel-btn {
   padding: 8px 16px;
   margin: 0 10px;
-  background-color: #383e51;
   color: #fff;
   border: none;
   border-radius: 4px;
   font-size: 14px;
   cursor: pointer;
 }
+.my-spot-modal-delete-btn {
+  background-color: red;
+}
 
-.my-spot-modal-delete-btn:hover,
-.my-spot-modal-cancel-btn:hover {
-  background-color: #303646;
+.my-spot-modal-cancel-btn {
+  background-color: rgb(129, 129, 129);
 }
 
 .my-spot-card a {
   width: 100%;
+}
+
+.click-me > a {
+  text-decoration: underline;
 }

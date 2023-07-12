@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchSpot, fetchSpotReviews } from "../../store/spots";
+import { deleteAReview, editReview } from "../../store/reviews";
 import "./SpotDetails.css";
 import { useHistory } from "react-router-dom";
 import ReviewModal from "../ReviewModal";
@@ -38,6 +39,15 @@ const Spot = () => {
   const handlePostReview = () => {
     openReviewModal();
   };
+
+  const handleDeleteReview = async (reviewId) => {
+    await dispatch(deleteAReview(reviewId));
+    setSpotUpdated(true);
+  };
+
+  // const handleUpdateReview = async (reviewId) => {
+
+  // }
 
   const updateSpotData = async () => {
     try {
@@ -185,33 +195,40 @@ const Spot = () => {
       )}
 
       <div className="review-container">
-        {reviews && reviews.length > 0 ? (
-          reviews.map((review) => {
-            return (
-              <div key={review.id} className="review-cards">
-                <div className="review-info">
-                  <div>
-                    <i class=" fa fa-solid fa-comments"></i>
+        {reviews && reviews.length > 0
+          ? reviews
+              .slice()
+              .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+              .map((review) => (
+                <div key={review.id} className="review-cards">
+                  <div className="review-info">
+                    <div>
+                      <i className="fa fa-solid fa-comments"></i>
+                    </div>
+                    <div className="review-user-info">
+                      <h3>{review.User.firstName}</h3>
+                      <p>
+                        {new Date(review.createdAt).toLocaleString("default", {
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
                   </div>
-                  <div className="review-user-info">
-                    <h3>{review.User.firstName}</h3>
-                    <p>
-                      {new Date(review.updatedAt).toLocaleString("default", {
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
+                  <div className="review-details">
+                    <p>{review.review}</p>
                   </div>
+                  {user.user && user.user.id === review.User.id && (
+                    <div className="user-review-btns">
+                      <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
+                    </div>
+                  )}
                 </div>
-                <div className="review-details">
-                  <p>{review.review}</p>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <p>{!user ? "Be the first one to review!" : ""}</p>
-        )}
+              ))
+          : !user ||
+            (spot && spot.Owner && user.user.id !== spot.Owner.id && (
+              <p>Be the first to post a review!</p>
+            ))}
       </div>
     </>
   );

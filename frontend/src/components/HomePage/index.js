@@ -21,17 +21,23 @@ function HomePage() {
         {spots ? (
           spots.map((spot) => (
             <Link key={spot.id} to={`/spots/${spot.id}`}>
-              <div className="spot-card" key={spot.id}>
+              <div className="spot-card" key={spot.id} title={spot.name}>
                 <img src={`${spot.previewImage}`} alt="view of the Spot from outside" />
-                <h3>{spot.name}</h3>
+                <div className="spot-info">
+                  <h3>{spot.name}</h3>
+                  {spot.avgRating === "0.0" ? (
+                    <p className="spot-rating">New!</p>
+                  ) : (
+                    <div className="spot-rating">
+                      <span>Rating:</span>
+                      <p>&#9733; {spot.avgRating}</p>
+                    </div>
+                  )}
+                </div>
                 <p>
                   {spot.city}, {spot.state}
                 </p>
                 <p>${spot.price} night</p>
-                {spot.avgRating === 0 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
-                <button className="homepage-btn" onClick={() => history.push(`/spots/${spot.id}`)}>
-                  More Info!
-                </button>
               </div>
             </Link>
           ))

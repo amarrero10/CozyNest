@@ -118,7 +118,7 @@ function CreateSpot() {
       }
 
       // Redirect or handle any necessary actions after successful submission
-      history.push("/my-spots");
+      history.push(`/spots/${spotId}`);
     } catch (error) {
       // Handle any submission errors
       console.log("Error:", error);
@@ -136,9 +136,9 @@ function CreateSpot() {
 
   return (
     <div className="create-spot-container">
-      <h2>Create a new Spot</h2>
+      <h2>Create a New Spot</h2>
       <h3>Where's your place located? To get started please fill out the form below.</h3>
-      <p>Guests will only have access to your address once they make a reservation.</p>
+      <p>Guests will only get your exact address once they booked a reservation.</p>
 
       <form className="create-spot-form" onSubmit={handleSubmit}>
         <label>Country</label>
@@ -151,7 +151,7 @@ function CreateSpot() {
           className={errors.country ? "error-input" : ""}
         ></input>
         {errors.country && <span className="error">{errors.country}</span>}
-        <label>Address</label>
+        <label>Street Address</label>
         <input
           required
           type="text"
@@ -186,7 +186,7 @@ function CreateSpot() {
         <label>Longitude</label>
         <input type="number" value={lng} onChange={(e) => setLng(e.target.value)}></input>
         <hr />
-        <label>Tell us about your amazing rental!</label>
+        <label>Describe your place to guests!</label>
         <p>
           Make sure to highlight the unique features, amenities, nearby attractions, and any special
           experiences your rental offers!
@@ -230,6 +230,7 @@ function CreateSpot() {
         {errors.price && <span className="error">{errors.price}</span>}
         <hr />
         <h3>Time to add some pictures!</h3>
+        <p>Submit a link to at least one photo to publish your spot.</p>
         <input
           type="text"
           required
@@ -246,7 +247,6 @@ function CreateSpot() {
           <input
             key={index}
             type="text"
-            required
             placeholder={`Image URL ${index + 1}`}
             value={spotImages[index]?.url || ""}
             onChange={(e) => handleImageChange(index, e.target.value)}
@@ -258,7 +258,7 @@ function CreateSpot() {
           type="submit"
           className={`create-spot-btn ${Object.keys(errors).length > 0 ? "shake" : ""}`}
         >
-          Create your spot!
+          Create Spot!
         </button>
       </form>
     </div>

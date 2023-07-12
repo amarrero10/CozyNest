@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userSpots, deleteASpot } from "../../store/spots";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import CreateSpot from "../CreateSpot";
 
 function MySpots() {
   const history = useHistory();
@@ -46,8 +47,10 @@ function MySpots() {
 
   return (
     <>
-      <h2>Manage your spots</h2>
-      <button className="new-spot-btn">Create a New Spot</button>
+      <h2>Manage Spots</h2>
+      <Link to="/create-spot">
+        <button className="new-spot-btn">Create a New Spot</button>
+      </Link>
       <div className="my-spot-container">
         <div className="spots-grid">
           {spots.length > 0 ? (
@@ -80,7 +83,12 @@ function MySpots() {
               </div>
             ))
           ) : (
-            <h2 className="no-spots">No Spots yet! Click the button above to create a spot.</h2>
+            <h2 className="no-spots">
+              No Spots yet! Click the button above to create a spot or{" "}
+              <Link to="/create-spot" className="click-me">
+                click here!
+              </Link>
+            </h2>
           )}
         </div>
       </div>

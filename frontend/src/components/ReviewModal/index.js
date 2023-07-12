@@ -72,7 +72,9 @@ function ReviewModal({ closeModal }) {
         {errors.stars && <p>{errors.stars}</p>}
         <button
           type="submit"
-          disabled={Object.keys(errors).length > 0 || !reviewText || rating === 0}
+          disabled={
+            Object.keys(errors).length > 0 || !reviewText || reviewText.length < 10 || rating === 0
+          }
         >
           Submit
         </button>
