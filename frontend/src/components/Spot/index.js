@@ -17,6 +17,8 @@ const Spot = () => {
   const [reviewModal, setReviewModal] = useState(false);
   const [showModalBackground, setShowModalBackground] = useState(false);
   const [spotUpdated, setSpotUpdated] = useState(false); // New state variable
+  const [editReviewId, setEditReviewId] = useState(null);
+  const [reviewUpdated, setReviewUpdated] = useState(false);
 
   const openReviewModal = () => {
     setReviewModal(true);
@@ -45,14 +47,29 @@ const Spot = () => {
     setSpotUpdated(true);
   };
 
-  // const handleUpdateReview = async (reviewId) => {
+  const handleEditReview = (reviewId) => {
+    setEditReviewId(reviewId);
+    setReviewModal(true);
+    setShowModalBackground(true);
+    document.body.style.overflow = "hidden";
+  };
 
-  // }
+  const handleEditReviewSubmit = async (reviewData) => {
+    try {
+      await dispatch(editReview(reviewData, editReviewId)); // Dispatch the editReview action with the review data and review ID
+      closeReviewModal(); // Close the modal after successful review submission or edit
+      setReviewUpdated(true);
+      setSpotUpdated(true); // Trigger spot update as well
+    } catch (error) {
+      // Handle error
+      console.log("Error editing review:", error);
+    }
+  };
 
   const updateSpotData = async () => {
     try {
       await dispatch(fetchSpot(id));
-      await dispatch(fetchSpotReviews(id));
+      await dispatch(fetchSpotReviews(id)); // Pass the spot id instead of spotCopy
     } catch (error) {
       console.log("An error happened!");
       history.push("/");
@@ -79,7 +96,15 @@ const Spot = () => {
       updateSpotData();
       setSpotUpdated(false);
     }
-  }, [spotUpdated]); // Use spotUpdated as the dependency
+  }, [spotUpdated]);
+
+  useEffect(() => {
+    if (spot && (spotUpdated || reviewUpdated)) {
+      updateSpotData();
+      setSpotUpdated(false);
+      setReviewUpdated(false);
+    }
+  }, [dispatch, id, spot, spotUpdated, reviewUpdated]);
 
   if (!spot) {
     return <p>Loading...</p>;
@@ -220,7 +245,22 @@ const Spot = () => {
                   </div>
                   {user.user && user.user.id === review.User.id && (
                     <div className="user-review-btns">
+                      <button onClick={() => handleEditReview(review.id)}>Edit</button>
                       <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
+                    </div>
+                  )}
+                  {reviewModal && (
+                    <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
+                      <div className="modal-content">
+                        <span className="close" onClick={closeReviewModal}>
+                          &times;
+                        </span>
+                        <ReviewModal
+                          closeModal={closeReviewModal}
+                          editReviewId={editReviewId}
+                          onSubmit={handleEditReviewSubmit} // Pass the submit handler function to the ReviewModal
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
