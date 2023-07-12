@@ -115,7 +115,18 @@ router.get("/current/spots", requireAuth, async (req, res) => {
         order: [["createdAt", "DESC"]],
         limit: 1,
       },
+      {
+        model: Review,
+        as: "SpotReviews",
+        attributes: [
+          [
+            Sequelize.literal("ROUND(AVG(stars), 1)"),
+            "avgRating", // Calculate the rounded average rating
+          ],
+        ],
+      },
     ],
+    group: ["Spot.id"], // Group by Spot.id to avoid duplicates
   });
 
   const formattedSpots = spots.map((spot) => ({
@@ -132,7 +143,9 @@ router.get("/current/spots", requireAuth, async (req, res) => {
     price: spot.price,
     createdAt: spot.createdAt,
     updatedAt: spot.updatedAt,
-    avgRating: spot.avgRating,
+    avgRating: spot.SpotReviews[0]?.dataValues.avgRating
+      ? spot.SpotReviews[0].dataValues.avgRating.toFixed(1)
+      : "0.0", // Get the average rating value from the SpotReviews association
     previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null,
   }));
 

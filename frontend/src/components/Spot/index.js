@@ -35,7 +35,7 @@ const Spot = () => {
   const userHasReviewed = () => {
     if (!user || !Array.isArray(reviews)) return false;
 
-    return reviews.some((review) => review.User.id === user.user.id);
+    return reviews.some((review) => review.User?.id === user?.user?.id); // Access properties safely
   };
 
   const handlePostReview = () => {
@@ -89,7 +89,7 @@ const Spot = () => {
     };
 
     fetchData();
-  }, [dispatch, id]);
+  }, [dispatch, id, user]);
 
   useEffect(() => {
     if (spot && spotUpdated) {
@@ -205,15 +205,11 @@ const Spot = () => {
                 : ""}
             </h2>
           </div>
-          {user &&
-            user.user &&
-            spot.Owner &&
-            !userHasReviewed() &&
-            user.user.id !== spot.Owner.id && (
-              <button className="spot-btn post-review-btn" onClick={handlePostReview}>
-                Post Your Review!
-              </button>
-            )}
+          {user && spot.Owner && !userHasReviewed() && user.user?.id !== spot.Owner.id && (
+            <button className="spot-btn post-review-btn" onClick={handlePostReview}>
+              Post Your Review!
+            </button>
+          )}
         </>
       ) : (
         <p>Something's wrong</p>
@@ -224,49 +220,53 @@ const Spot = () => {
           ? reviews
               .slice()
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-              .map((review) => (
-                <div key={review.id} className="review-cards">
-                  <div className="review-info">
-                    <div>
-                      <i className="fa fa-solid fa-comments"></i>
-                    </div>
-                    <div className="review-user-info">
-                      <h3>{review.User.firstName}</h3>
-                      <p>
-                        {new Date(review.createdAt).toLocaleString("default", {
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="review-details">
-                    <p>{review.review}</p>
-                  </div>
-                  {user.user && user.user.id === review.User.id && (
-                    <div className="user-review-btns">
-                      <button onClick={() => handleEditReview(review.id)}>Edit</button>
-                      <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
-                    </div>
-                  )}
-                  {reviewModal && (
-                    <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
-                      <div className="modal-content">
-                        <span className="close" onClick={closeReviewModal}>
-                          &times;
-                        </span>
-                        <ReviewModal
-                          closeModal={closeReviewModal}
-                          editReviewId={editReviewId}
-                          onSubmit={handleEditReviewSubmit} // Pass the submit handler function to the ReviewModal
-                        />
+              .map((review) =>
+                review && review.User ? (
+                  <div key={review.id} className="review-cards">
+                    {review && review.User && (
+                      <div className="review-info">
+                        <div>
+                          <i className="fa fa-solid fa-comments"></i>
+                        </div>
+                        <div className="review-user-info">
+                          <h3>{review.User.firstName}</h3>
+                          <p>
+                            {new Date(review.createdAt).toLocaleString("default", {
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </p>
+                        </div>
                       </div>
+                    )}
+                    <div className="review-details">
+                      <p>{review.review}</p>
                     </div>
-                  )}
-                </div>
-              ))
+                    {user && user.user && user.user.id === review.User.id && (
+                      <div className="user-review-btns">
+                        <button onClick={() => handleEditReview(review.id)}>Edit</button>
+                        <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
+                      </div>
+                    )}
+                    {reviewModal && (
+                      <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
+                        <div className="modal-content">
+                          <span className="close" onClick={closeReviewModal}>
+                            &times;
+                          </span>
+                          <ReviewModal
+                            closeModal={closeReviewModal}
+                            editReviewId={editReviewId}
+                            onSubmit={handleEditReviewSubmit}
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : null
+              )
           : !user ||
-            (spot && spot.Owner && user.user.id !== spot.Owner.id && (
+            (spot && spot.Owner && user.user?.id !== spot.Owner.id && (
               <p>Be the first to post a review!</p>
             ))}
       </div>

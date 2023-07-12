@@ -76,6 +76,7 @@ export const fetchMyReviews = () => async (dispatch) => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data.Reviews);
       dispatch(setMyReviews(data.Reviews)); // Access reviews from data.Reviews
     } else {
       throw new Error("Failed to fetch user's reviews");

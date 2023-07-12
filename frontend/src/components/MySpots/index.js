@@ -30,8 +30,8 @@ function MySpots() {
       dispatch(deleteASpot(selectedSpot))
         .then(() => {
           // Spot deleted successfully, handle any necessary actions or state updates
-          dispatch(userSpots()); // Fetch updated spots after deletion
-          setSelectedSpot(null); // Reset selected spot
+          dispatch(userSpots()) // Fetch updated spots after deletion
+            .then(() => setSelectedSpot(null)); // Reset selected spot
         })
         .catch((error) => {
           // Error occurred during deletion, handle it appropriately
@@ -68,7 +68,7 @@ function MySpots() {
                     {spot.city}, {spot.state}
                   </p>
                   <p>${spot.price} night</p>
-                  {spot.avgRating !== 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
+                  {spot.avgRating >= 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
                 </Link>
 
                 <div className="my-spot-btns">
