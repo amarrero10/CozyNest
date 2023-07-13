@@ -19,6 +19,8 @@ const Spot = () => {
   const [spotUpdated, setSpotUpdated] = useState(false); // New state variable
   const [editReviewId, setEditReviewId] = useState(null);
   const [reviewUpdated, setReviewUpdated] = useState(false);
+  const [reviewIdToDelete, setReviewIdToDelete] = useState(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const openReviewModal = () => {
     setReviewModal(true);
@@ -42,9 +44,22 @@ const Spot = () => {
     openReviewModal();
   };
 
-  const handleDeleteReview = async (reviewId) => {
-    await dispatch(deleteAReview(reviewId));
+  const handleDeleteReview = (reviewId) => {
+    setReviewIdToDelete(reviewId);
+    setShowConfirmationModal(true);
+    document.body.classList.add("modal-open"); // Add class to <body> element
+  };
+
+  const confirmDeleteReview = async () => {
+    await dispatch(deleteAReview(reviewIdToDelete));
+    setShowConfirmationModal(false);
     setSpotUpdated(true);
+    document.body.classList.remove("modal-open"); // Remove class from <body> element
+  };
+
+  const cancelDeleteReview = () => {
+    setShowConfirmationModal(false);
+    document.body.classList.remove("modal-open"); // Remove class from <body> element
   };
 
   const handleEditReview = (reviewId) => {
@@ -214,7 +229,6 @@ const Spot = () => {
       ) : (
         <p>Something's wrong</p>
       )}
-
       <div className="review-container">
         {reviews && reviews.length > 0
           ? reviews
@@ -248,6 +262,7 @@ const Spot = () => {
                         <button onClick={() => handleDeleteReview(review.id)}>Delete</button>
                       </div>
                     )}
+
                     {reviewModal && (
                       <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
                         <div className="modal-content">
@@ -270,6 +285,26 @@ const Spot = () => {
               <p>Be the first to post a review!</p>
             ))}
       </div>
+
+      <>
+        {showConfirmationModal && (
+          <>
+            <div className="modal-background"></div>
+            <div className="confirmation-modal">
+              <h3>Confirm Delete</h3>
+              <p>Are you sure you want to delete this review?</p>
+              <div className="confirmation-modal-buttons">
+                <button className="delete-button" onClick={confirmDeleteReview}>
+                  Yes (Delete Review)
+                </button>
+                <button className="keep-button" onClick={cancelDeleteReview}>
+                  No (Keep Review)
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </>
     </>
   );
 };
