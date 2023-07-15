@@ -9,8 +9,8 @@ import CreateSpot from "../CreateSpot";
 function MySpots() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const spots = useSelector((state) => state.spots.spots);
   const user = useSelector((state) => state.session.user);
+  const spots = useSelector((state) => state.spots.spots);
   const [selectedSpot, setSelectedSpot] = useState(null);
 
   useEffect(() => {
@@ -56,7 +56,6 @@ function MySpots() {
           {spots.length > 0 ? (
             spots.map((spot) => (
               <>
-                {console.log(spot.previewImage)}
                 <div className="spot-card my-spot-card">
                   <Link key={spot.id} to={`/spots/${spot.id}`}>
                     <img
