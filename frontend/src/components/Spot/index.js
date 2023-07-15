@@ -234,7 +234,7 @@ const Spot = () => {
             </button>
           )}
           <div>
-            {userIsSpotOwner && reviews.length === 0 && (
+            {userIsSpotOwner && (!reviews || reviews.length === 0) && (
               <p>No reviews have been posted for your spot yet.</p>
             )}
           </div>
@@ -243,7 +243,7 @@ const Spot = () => {
         <p>Something's wrong</p>
       )}
       <div className="review-container">
-        {reviews && reviews.length > 0
+        {Array.isArray(reviews) && reviews.length > 0
           ? reviews
               .slice()
               .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))

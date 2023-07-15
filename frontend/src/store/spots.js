@@ -113,6 +113,7 @@ export const userSpots = () => async (dispatch) => {
   const response = await csrfFetch("/api/users/current/spots");
   if (response.ok) {
     const data = await response.json();
+    console.log("DATA", data);
     dispatch(setSpots(data.Spots));
   }
 };

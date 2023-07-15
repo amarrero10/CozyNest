@@ -97,7 +97,6 @@ router.get("/:id", async (req, res) => {
   return res.json(safeUser);
 });
 
-// GET all spots owned by current user
 router.get("/current/spots", requireAuth, async (req, res) => {
   const currentUser = req.user;
 
@@ -126,7 +125,7 @@ router.get("/current/spots", requireAuth, async (req, res) => {
         ],
       },
     ],
-    group: ["Spot.id"], // Group by Spot.id to avoid duplicates
+    group: ["Spot.id", "SpotReviews.id"], // Include SpotReviews.id in the GROUP BY clause
   });
 
   const formattedSpots = spots.map((spot) => ({
@@ -145,7 +144,7 @@ router.get("/current/spots", requireAuth, async (req, res) => {
     updatedAt: spot.updatedAt,
     avgRating: spot.SpotReviews[0]?.dataValues.avgRating
       ? spot.SpotReviews[0].dataValues.avgRating.toFixed(1)
-      : "0.0", // Get the average rating value from the SpotReviews association
+      : "0.0",
     previewImage: spot.SpotImages.length > 0 ? spot.SpotImages[0].url : null,
   }));
 

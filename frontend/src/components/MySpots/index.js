@@ -56,7 +56,7 @@ function MySpots() {
           {spots.length > 0 ? (
             spots.map((spot) => (
               <>
-                <div className="spot-card my-spot-card">
+                <div className="spot-card my-spot-card" key={spot.id}>
                   <Link key={spot.id} to={`/spots/${spot.id}`}>
                     <img
                       className="my-spot-img"
