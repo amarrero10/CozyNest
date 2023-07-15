@@ -129,6 +129,10 @@ const Spot = () => {
     alert("Feature coming soon");
   };
 
+  const userIsSpotOwner = user && spot.Owner && user.user?.id === spot.Owner.id;
+
+  console.log(userIsSpotOwner);
+
   return (
     <>
       {spot ? (
@@ -154,22 +158,24 @@ const Spot = () => {
             <div className="spot-images">
               <div className="spot-grid">
                 <div className="large-image">
-                  {spot.SpotImages && spot.SpotImages.length > 0 && (
-                    <img src={spot.SpotImages[spot.SpotImages.length - 1].url} alt="Large" />
+                  {spot.SpotImages && spot.SpotImages.length > 0 ? (
+                    <img src={spot.SpotImages[0]?.url} alt="Large" />
+                  ) : (
+                    <img src={spot.previewImage} />
                   )}
                 </div>
+
                 <div
                   className={`small-images ${
                     spot.SpotImages && spot.SpotImages.length > 5 ? "hide-extra" : ""
                   }`}
                 >
                   {spot.SpotImages &&
+                    Array.isArray(spot.SpotImages) &&
                     spot.SpotImages.length > 1 &&
-                    spot.SpotImages.slice(1, 6)
-                      .filter(
-                        (image) => image.id !== spot.SpotImages[spot.SpotImages.length - 1].id
-                      )
-                      .map((image) => <img key={image.id} src={image.url} alt="Small" />)}
+                    spot.SpotImages.slice(1, 6).map((image) => (
+                      <img key={image.id} src={image.url} alt="Small" />
+                    ))}
                 </div>
               </div>
             </div>
@@ -212,6 +218,8 @@ const Spot = () => {
             <h2>
               {spot.avgStarRating >= 1 ? <>&#9733; {spot.avgStarRating}</> : <>&#9733; New!</>}
             </h2>
+            {spot.avgStarRating >= 1 ? <p className="period">.</p> : ""}
+
             <h2>
               {spot.numReviews > 0
                 ? spot.numReviews > 1
@@ -225,6 +233,11 @@ const Spot = () => {
               Post Your Review!
             </button>
           )}
+          <div>
+            {userIsSpotOwner && reviews.length === 0 && (
+              <p>No reviews have been posted for your spot yet.</p>
+            )}
+          </div>
         </>
       ) : (
         <p>Something's wrong</p>

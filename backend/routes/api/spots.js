@@ -223,8 +223,25 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    const spotImages = spot.SpotImages;
-    let primaryImage = null;
+    const formattedSpotImages = spot.SpotImages.filter(
+      (image) => image.url !== "No Images uploaded."
+    ) // Exclude the placeholder image
+      .map((image) => ({
+        id: image.id,
+        url: image.url,
+        preview: image.preview,
+      }));
+
+    console.log(formattedSpotImages);
+
+    // if (spot.previewImage) {
+    //   formattedSpotImages.unshift({
+    //     id: null,
+    //     url: spot.previewImage,
+    //     preview: true,
+    //   });
+
+    // }
 
     const formattedSpot = {
       id: spot.id,
@@ -242,29 +259,14 @@ router.get("/:id", async (req, res) => {
       updatedAt: spot.updatedAt,
       numReviews: spot.getDataValue("numReviews"), // Access the calculated value of numReviews
       avgStarRating: parseFloat(spot.getDataValue("avgRating") || 0).toFixed(1),
-      SpotImages: [],
+      SpotImages: formattedSpotImages,
+      previewImage: spot.previewImage,
       Owner: {
         id: spot.Owner.id,
         firstName: spot.Owner.firstName,
         lastName: spot.Owner.lastName,
       },
     };
-
-    const formattedSpotImages = spot.SpotImages.map((image) => ({
-      id: image.id,
-      url: image.url,
-      preview: image.preview,
-    }));
-
-    if (spot.previewImage) {
-      formattedSpotImages.unshift({
-        id: null,
-        url: spot.previewImage,
-        preview: true,
-      });
-    }
-
-    formattedSpot.SpotImages = formattedSpotImages;
 
     res.status(200).json(formattedSpot);
   } catch (error) {
@@ -413,6 +415,7 @@ router.post("/", validateSpot, requireAuth, async (req, res) => {
       });
 
       newSpot.previewImage = image.url;
+      console.log(newSpot);
     }
 
     res.status(201).json(newSpot);
@@ -446,17 +449,34 @@ router.post("/:id/images", requireAuth, async (req, res) => {
 
   if (!spot) return res.status(404).json({ message: "Spot couldn't be found" });
 
-  const { url, preview } = req.body;
+  const { url, preview = false } = req.body;
 
-  const image = await Image.create({
-    imageableId: spotId,
-    imageableType: "spot",
-    url,
-    preview,
-  });
+  let primaryImage = null;
+  let image; // Declare the image variable outside the if statement
 
-  // Update the SpotImages association by adding the newly created image to the spot
-  spot.SpotImages.push(image);
+  if (preview) {
+    // Check if there is already a preview image
+    const existingPreviewImage = spot.SpotImages.find((image) => image.preview);
+    if (existingPreviewImage) {
+      existingPreviewImage.preview = false; // Set the existing preview image to false
+      await existingPreviewImage.save();
+    }
+    primaryImage = await Image.create({
+      imageableId: spotId,
+      imageableType: "spot",
+      url,
+      preview,
+    });
+    image = primaryImage; // Assign primaryImage to the image variable
+  } else {
+    image = await Image.create({
+      imageableId: spotId,
+      imageableType: "spot",
+      url,
+      preview,
+    });
+    spot.SpotImages.push(image);
+  }
 
   // Exclude imageableId and imageableType properties from the response using destructuring
   const { imageableId, imageableType, createdAt, updatedAt, ...responseData } = image.toJSON();

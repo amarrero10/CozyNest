@@ -127,7 +127,7 @@ function CreateSpot() {
 
   const handleImageChange = (index, value) => {
     const updatedImages = [...spotImages];
-    const updatedImage = { id: index, url: value, preview: index === 0 };
+    const updatedImage = { id: index, url: value, preview: value === previewImage };
     updatedImages[index] = updatedImage;
     setSpotImages(updatedImages);
   };

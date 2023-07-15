@@ -92,7 +92,7 @@ export const createSpot = (spot) => async (dispatch) => {
 };
 
 export const addSpotImages = (image, spotId) => async (dispatch) => {
-  const { url, preview } = image;
+  const { url, preview = false } = image;
 
   const response = await csrfFetch(`/api/spots/${spotId}/images`, {
     method: "POST",
@@ -143,7 +143,6 @@ export const editSpot = (spot, spotId) => async (dispatch) => {
       lng,
       description,
       price,
-      previewImage,
     }),
   });
 

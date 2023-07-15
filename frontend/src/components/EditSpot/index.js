@@ -95,7 +95,6 @@ function EditSpot({ location }) {
       lng: lng || null,
       description,
       price,
-      previewImage,
     };
 
     try {
@@ -207,18 +206,6 @@ function EditSpot({ location }) {
         ></input>
         {errors.price && <span className="error">{errors.price}</span>}
         <hr />
-        <h3>Time to add some pictures!</h3>
-        <input
-          type="text"
-          required
-          placeholder="Image URL"
-          value={previewImage}
-          onChange={(e) => {
-            setPreviewImage(e.target.value);
-          }}
-          className={errors.previewImage ? "error-input" : ""}
-        ></input>
-        {errors.previewImage && <span className="error">{errors.previewImage}</span>}
 
         <button type="submit" className={Object.keys(errors).length > 0 ? "shake" : ""}>
           Update your spot!

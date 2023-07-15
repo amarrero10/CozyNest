@@ -55,38 +55,41 @@ function MySpots() {
         <div className="spots-grid">
           {spots.length > 0 ? (
             spots.map((spot) => (
-              <div className="spot-card my-spot-card">
-                <Link key={spot.id} to={`/spots/${spot.id}`}>
-                  <img
-                    className="my-spot-img"
-                    src={`${spot.previewImage}`}
-                    alt="view of the Spot from outside"
-                    key={spot.previewImage}
-                  />
-                  <h3>{spot.name}</h3>
-                  <p>
-                    {spot.city}, {spot.state}
-                  </p>
-                  <p>${spot.price} night</p>
-                  {spot.avgRating >= 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
-                </Link>
-
-                <div className="my-spot-btns">
-                  <Link to={{ pathname: "/edit-spot", state: { spot } }}>
-                    <button className="spot-update-btn">Update Spot</button>
+              <>
+                {console.log(spot.previewImage)}
+                <div className="spot-card my-spot-card">
+                  <Link key={spot.id} to={`/spots/${spot.id}`}>
+                    <img
+                      className="my-spot-img"
+                      src={`${spot.previewImage}`}
+                      alt="view of the Spot from outside"
+                      key={spot.previewImage}
+                    />
+                    <h3>{spot.name}</h3>
+                    <p>
+                      {spot.city}, {spot.state}
+                    </p>
+                    <p>${spot.price} night</p>
+                    {spot.avgRating >= 1 ? <p> &#9733; {spot.avgRating}</p> : <p>New!</p>}
                   </Link>
 
-                  <button className="spot-delete-btn" onClick={() => handleDelete(spot.id)}>
-                    Delete
-                  </button>
+                  <div className="my-spot-btns">
+                    <Link to={{ pathname: "/edit-spot", state: { spot } }}>
+                      <button className="spot-update-btn">Update Spot</button>
+                    </Link>
+
+                    <button className="spot-delete-btn" onClick={() => handleDelete(spot.id)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </>
             ))
           ) : (
             <h2 className="no-spots">
               No Spots yet! Click the button above to create a spot or{" "}
               <Link to="/create-spot" className="click-me">
-                click here!
+                <span className="no-spots-span">click here!</span>
               </Link>
             </h2>
           )}
