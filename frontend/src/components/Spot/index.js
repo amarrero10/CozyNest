@@ -138,7 +138,7 @@ const Spot = () => {
       {spot ? (
         <>
           {reviewModal && (
-            <div className={`modal ${showModalBackground ? "" : "modal-hidden"}`}>
+            <div className={`${showModalBackground === false ? "modal-hidden" : "modal"}`}>
               <div className="modal-content">
                 <span className="close" onClick={closeReviewModal}>
                   &times;

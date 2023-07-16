@@ -71,7 +71,7 @@ function Navigation({ isLoaded }) {
       <ul className="navLinks">
         {isLoaded && sessionLinks}
         {!sessionUser && (
-          <>
+          <div className="not-signed-in">
             <li>
               <button onClick={openLoginModal} className="login-btn">
                 Log in
@@ -82,7 +82,7 @@ function Navigation({ isLoaded }) {
                 Sign Up
               </button>
             </li>
-          </>
+          </div>
         )}
       </ul>
 

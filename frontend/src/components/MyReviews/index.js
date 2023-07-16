@@ -11,7 +11,10 @@ function MyReviews() {
   const [reviewModal, setReviewModal] = useState(false);
   const [showModalBackground, setShowModalBackground] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
+  const [spotUpdated, setSpotUpdated] = useState(false); // New state variable
   const [reviewUpdated, setReviewUpdated] = useState(false);
+  const [reviewIdToDelete, setReviewIdToDelete] = useState(null);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const user = (state) => state.session.user;
 
   const openReviewModal = () => {
@@ -45,11 +48,24 @@ function MyReviews() {
 
   useEffect(() => {
     dispatch(fetchMyReviews());
-  }, [dispatch, reviewDeleted]);
+  }, [dispatch, reviewDeleted, spotUpdated]);
 
-  const handleDeleteReview = async (reviewId) => {
-    await dispatch(deleteAReview(reviewId));
-    setReviewDeleted(!reviewDeleted); // Toggle the reviewDeleted state to trigger re-render
+  const handleDeleteReview = (reviewId) => {
+    setReviewIdToDelete(reviewId);
+    setShowConfirmationModal(true);
+    document.body.classList.add("modal-open"); // Add class to <body> element
+  };
+
+  const confirmDeleteReview = async () => {
+    await dispatch(deleteAReview(reviewIdToDelete));
+    setShowConfirmationModal(false);
+    setSpotUpdated(true);
+    document.body.classList.remove("modal-open"); // Remove class from <body> element
+  };
+
+  const cancelDeleteReview = () => {
+    setShowConfirmationModal(false);
+    document.body.classList.remove("modal-open"); // Remove class from <body> element
   };
 
   if (!user) {
@@ -94,6 +110,23 @@ function MyReviews() {
                     />
                   </div>
                 </div>
+              )}
+              {showConfirmationModal && (
+                <>
+                  <div className="modal-background"></div>
+                  <div className="confirmation-modal">
+                    <h3>Confirm Delete</h3>
+                    <p>Are you sure you want to delete this review?</p>
+                    <div className="confirmation-modal-buttons">
+                      <button className="delete-button" onClick={confirmDeleteReview}>
+                        Yes (Delete Review)
+                      </button>
+                      <button className="keep-button" onClick={cancelDeleteReview}>
+                        No (Keep Review)
+                      </button>
+                    </div>
+                  </div>
+                </>
               )}
             </>
           );

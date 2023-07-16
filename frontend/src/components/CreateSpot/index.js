@@ -76,6 +76,18 @@ function CreateSpot() {
       validationErrors.previewImage = "Image URL must end in png, jpg, jpeg";
     }
 
+    // Custom validation for spotImages
+    const spotImagesErrors = spotImages.map((spotImage, index) => {
+      if (!/\.png$|\.jpg$|\.jpeg$/i.test(spotImage?.url)) {
+        return `Image URL ${index + 1} must end in png, jpg, jpeg`;
+      }
+      return null;
+    });
+
+    if (spotImagesErrors.some((error) => error)) {
+      validationErrors.spotImages = spotImagesErrors;
+    }
+
     // If there are validation errors, update the errors state and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -248,14 +260,16 @@ function CreateSpot() {
 
         {[0, 1, 2, 3].map((index) => (
           <input
-            key={index}
             type="text"
             placeholder={`Image URL ${index + 1}`}
             value={spotImages[index]?.url || ""}
             onChange={(e) => handleImageChange(index, e.target.value)}
-            className={errors.spotImages ? "error-input" : ""}
+            className={errors.spotImages && errors.spotImages[index] ? "error-input" : ""}
           />
         ))}
+        {errors.spotImages && errors.spotImages.some((error) => error) && (
+          <span className="error">Image URL must end in png, jpg, jpeg</span>
+        )}
 
         <button
           type="submit"
