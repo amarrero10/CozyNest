@@ -34,7 +34,7 @@ function HomePage() {
                     </div>
                   )}
                 </div>
-                <p>
+                <p className="spot-location">
                   {spot.city}, {spot.state}
                 </p>
                 <p>${spot.price} night</p>

@@ -182,8 +182,11 @@ function CreateSpot() {
         ></input>
         {errors.state && <span className="error">{errors.state}</span>}
         <label>Latitude</label>
+        <p>*optional</p>
         <input type="number" value={lat} onChange={(e) => setLat(e.target.value)}></input>
+
         <label>Longitude</label>
+        <p>*optional</p>
         <input type="number" value={lng} onChange={(e) => setLng(e.target.value)}></input>
         <hr />
         <label>Describe your place to guests!</label>

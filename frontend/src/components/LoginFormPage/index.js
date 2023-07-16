@@ -29,9 +29,6 @@ function LoginFormPage({ closeModal }) {
       const data = await res.json();
       if (data && data.errors) {
         setErrors(data.errors);
-        setTimeout(() => {
-          setErrors({});
-        }, 2500);
       }
     }
   };

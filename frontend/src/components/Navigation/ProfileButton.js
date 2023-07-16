@@ -46,7 +46,7 @@ function ProfileButton({ user }) {
       <ul className={`${ulClassName} `} ref={ulRef}>
         {user ? (
           <>
-            <li>Hello, {user.user.username}!</li>
+            <li>Hello, {user.user.firstName}!</li>
             <li>{user.user.email}</li>
             <hr />
             <Link className="profile-btn-links" to="/my-spots">

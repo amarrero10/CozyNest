@@ -85,3 +85,7 @@
   cursor: pointer;
   font-size: 1.2rem;
 }
+
+.spot-card p {
+  font-size: 14px;
+}

@@ -92,7 +92,7 @@ function ReviewModal({ closeModal, editReviewId }) {
             Object.keys(errors).length > 0 || !reviewText || reviewText.length < 10 || rating === 0
           }
         >
-          Submit
+          Submit Your Review
         </button>
       </form>
     </div>
