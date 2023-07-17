@@ -24,14 +24,13 @@ function EditSpot({ location }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Preview Image:", previewImage);
     setErrors({});
 
     // Perform custom validation checks
     const validationErrors = {};
 
     if (!country) {
-      validationErrors.country = "Country is required";
+      validationErrors.country = "Complete country name is required";
     }
 
     if (!address) {
@@ -45,7 +44,7 @@ function EditSpot({ location }) {
     }
 
     if (!state) {
-      validationErrors.state = "State is required";
+      validationErrors.state = "Complete State name is required";
     }
 
     if (state.length < 4) {
@@ -60,8 +59,15 @@ function EditSpot({ location }) {
       validationErrors.description = "Description must be at least 30 characters.";
     }
 
+    if (description.length > 1500) {
+      validationErrors.description = "Description must be less than 1500 characters.";
+    }
+
     if (!name) {
       validationErrors.name = "Name is required";
+    }
+    if (name.length > 50) {
+      validationErrors.name = "Name must be less than 50 characters.";
     }
 
     if (!price) {
@@ -81,7 +87,15 @@ function EditSpot({ location }) {
     // If there are validation errors, update the errors state and return
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      // Rest of the code...
+      const formButton = document.querySelector(".create-spot-form button");
+      formButton.classList.add("shake");
+
+      // Remove the shake class after the animation finishes
+      setTimeout(() => {
+        formButton.classList.remove("shake");
+      }, 300);
+
+      return;
     }
 
     // If no validation errors, proceed with submitting the form

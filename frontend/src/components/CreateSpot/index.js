@@ -58,6 +58,10 @@ function CreateSpot() {
       validationErrors.description = "Description must be at least 30 characters.";
     }
 
+    if (description.length > 1500) {
+      validationErrors.description = "Description must be less than 1500 characters.";
+    }
+
     if (!name) {
       validationErrors.name = "Name is required";
     }
