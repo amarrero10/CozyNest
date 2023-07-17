@@ -29,7 +29,7 @@ function CreateSpot() {
     const validationErrors = {};
 
     if (!country) {
-      validationErrors.country = "Country is required";
+      validationErrors.country = "Complete country name is required";
     }
 
     if (!address) {
@@ -43,7 +43,7 @@ function CreateSpot() {
     }
 
     if (!state) {
-      validationErrors.state = "State is required";
+      validationErrors.state = "Complete State name is required";
     }
 
     if (state.length < 4) {
@@ -60,6 +60,9 @@ function CreateSpot() {
 
     if (!name) {
       validationErrors.name = "Name is required";
+    }
+    if (name.length > 50) {
+      validationErrors.name = "Name must be less than 50 characters.";
     }
 
     if (!price) {

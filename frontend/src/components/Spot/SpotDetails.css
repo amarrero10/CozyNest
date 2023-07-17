@@ -7,6 +7,7 @@
 .large-image {
   grid-column: 1 / 2; /* Span across both grid columns */
   grid-row: 1 / 1; /* Adjust the grid rows */
+  border: none;
 }
 
 .small-images {
@@ -38,9 +39,14 @@
 }
 
 .spot-text {
-  width: 900px;
+  width: 500px;
   text-align: justify;
   margin-right: 50px;
+}
+
+.spot-desc {
+  width: 500px;
+  line-break: anywhere;
 }
 
 .spot-callout {

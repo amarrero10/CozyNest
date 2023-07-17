@@ -183,7 +183,7 @@ const Spot = () => {
             <div className="spot-info">
               <div className="spot-text">
                 <h2>Hosted by {spot.Owner && `${spot.Owner.firstName} ${spot.Owner.lastName}`}</h2>
-                <p>{spot.description}</p>
+                <p className="spot-desc">{spot.description}</p>
               </div>
               <div className="spot-callout">
                 <div className="mini-spot-details">
