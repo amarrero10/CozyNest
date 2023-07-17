@@ -267,3 +267,10 @@ body.modal-open::-webkit-scrollbar {
   background-color: gray;
   color: #fff;
 }
+
+.full-width {
+  grid-column: 1 / -1; /* Span across all grid columns */
+  grid-row: 1 / 1; /* Span across the first grid row */
+  height: 600px;
+  border: none;
+}

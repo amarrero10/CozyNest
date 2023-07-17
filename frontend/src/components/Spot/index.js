@@ -157,7 +157,11 @@ const Spot = () => {
             </div>
             <div className="spot-images">
               <div className="spot-grid">
-                <div className="large-image">
+                <div
+                  className={`large-image ${
+                    spot.SpotImages && spot.SpotImages.length > 1 ? "" : "full-width"
+                  }`}
+                >
                   {spot.SpotImages && spot.SpotImages.length > 0 ? (
                     <img src={spot.SpotImages[0]?.url} alt="Large" />
                   ) : (
